@@ -1,33 +1,41 @@
-# Template GitHub Pages — just-the-docs (UNLaM)
+# Diseño de Software (3648) — UNLaM
 
-Template base para sitios de cursada en GitHub Pages usando el tema [just-the-docs](https://just-the-docs.com/) con customizaciones propias.
+Sitio de apuntes de teoría y material de estudio de la asignatura **3648 — Diseño de Software** (Trayecto Desarrollo de Software, Ingeniería en Informática, UNLaM). Publicado con **GitHub Pages** usando el tema [just-the-docs](https://just-the-docs.com/).
 
-## Qué incluye
+- **Sitio publicado:** https://unlam-informatica.github.io/diseno-de-software
+- Contenido en **español**, organizado por unidad según el programa analítico de la cátedra.
+- Objetivo actual: **material de teoría** para los parciales. Los ejercicios/casos prácticos se incorporarán más adelante.
 
-- **`_config.yml`** — configuración Jekyll con `remote_theme: just-the-docs/just-the-docs`, color scheme dark, search y heading anchors habilitados.
-- **`_sass/custom/setup.scss`** — overrides previos al tema (paleta de colores). Vacío por defecto: respeta la paleta `dark` original.
-- **`_sass/custom/custom.scss`** — overrides posteriores al tema:
-  - Sidebar fijo en 25rem (≥ 1064px), links alineados a la izquierda.
-  - Layout de 3 columnas en pantallas ≥ 1100px: `sidebar | contenido | TOC`.
-  - Wrapper `.main-content-toc-wrap` con `max-width: 1000px` y centrado.
-  - TOC de página (columna derecha) con sticky, scroll, sección activa resaltada.
-  - Estilos para `.main-content`, tablas, bloques de código y sidebar.
-- **`_includes/head_custom.html`** — inyecta `page-toc.js` en el `<head>`.
-- **`assets/js/page-toc.js`** — genera el TOC de página a partir de los `h2`/`h3` con `id`, lo envuelve junto al contenido en `.main-content-toc-wrap`, e implementa el highlight con `IntersectionObserver`.
-- **`assets/favicon/`** — favicons en múltiples tamaños y `site.webmanifest` (reemplazar por los de la materia).
-- **`index.md`** — home con placeholders.
-- **`.gitignore`** — exclusiones de Jekyll (`_site/`, caches, `Gemfile.lock`, etc.).
+## Programa (6 unidades)
 
-## Uso como template
+1. **Diseño de software** — abstracción, refinamiento, modularidad, cohesión, acoplamiento, independencia funcional, reutilización.
+2. **Del diseño de sistemas al diseño de software** — procesos de negocio y de software, roles, atributos de calidad y restricciones.
+3. **Los patrones y el diseño** — GRASP y GoF (creacionales, estructurales, de comportamiento); antipatrones.
+4. **Diseño, refinamiento y especificación** — requisitos y diseño; topologías Web, Móvil y Escritorio; SOA y eventos.
+5. **Diseño de sistemas de tiempo real** — sensores, actuadores y núcleo; tareas, sincronización, prioridades; Redes de Petri.
+6. **Interfaz Hombre-Computadora** — UX vs UI, principios de interfaces, diseño centrado en el usuario, e-commerce.
 
-1. Crear repo a partir del template de GitHub.
-2. Editar `_config.yml`: `title`, `description`, `baseurl`, `aux_links` (GitHub).
-3. Reemplazar `assets/favicon/*` y `site.webmanifest` por los del proyecto.
-4. Reemplazar el contenido de `index.md`.
-5. Activar GitHub Pages: Settings → Pages → Source: Deploy from a branch → `main` / `/ (root)`.
+Evaluación: **primer parcial** sobre unidades 1–3; **segundo parcial** (TP de investigación) sobre unidades 1–6. Materia de promoción.
 
-## Personalización
+## Estructura
 
-- **Cambiar paleta de colores**: agregar variables Sass en `_sass/custom/setup.scss` antes de la línea comentada (ver [just-the-docs customization](https://just-the-docs.com/docs/customization/)).
-- **Layout sin TOC**: borrar `_includes/head_custom.html` y `assets/js/page-toc.js`; ajustar `custom.scss` para eliminar `.main-content-toc-wrap` y `.page-toc`.
-- **Sidebar de ancho distinto**: cambiar `width: 25rem` y `margin-left: 25rem` en el bloque `@media (min-width: 66.5rem)` de `custom.scss`.
+```
+_config.yml              # Config Jekyll/just-the-docs (title, baseurl, callouts, etc.)
+index.md                 # Home: índice de unidades, evaluación y bibliografía
+unidad-N/index.md        # Landing de cada unidad (overview + temas + bibliografía)
+unidad-N/teoria.md       # Teoría de la unidad (página hija)
+_sass/custom/*.scss      # Overrides de estilo del tema
+_includes/head_custom.html, assets/js/page-toc.js   # TOC de página (columna derecha)
+reference/               # PDFs fuente de la cátedra (excluidos del build)
+```
+
+## Desarrollo local
+
+```bash
+bundle install
+bundle exec jekyll serve   # http://localhost:4000/diseno-de-software/
+```
+
+## Publicación
+
+Push a `main`; GitHub Pages buildea desde la raíz (Settings → Pages → Deploy from a branch → `main` / `/ (root)`).
