@@ -45,6 +45,38 @@
   // }
 }
 
+// ─── Callouts: paleta accesible para dark mode ───────────────────────────────
+//
+// El tema (callouts_level: loud) pinta título y bordes con el tono -300 de cada
+// color y sin relleno; varios de esos tonos quedan apagados/poco legibles sobre
+// el fondo oscuro. Acá unificamos los cinco callouts con buenas prácticas de UX
+// para admoniciones en dark mode:
+//  • un acento CLARO y de alto contraste por cada tipo,
+//  • hues bien diferenciados (azul / violeta / rojo / ámbar / teal) para que el
+//    tipo de callout se reconozca de un vistazo,
+//  • un fondo translúcido tenue (relleno suave) que separa el bloque del cuerpo
+//    sin "gritar".
+// El acento se aplica al borde izquierdo (jerarquía visual) y al título.
+
+$callouts-acentos: (
+  "note":       #79c0ff,  // Nota — azul info, suave y legible
+  "important":  #d2a8ff,  // Importante — violeta (convención GitHub)
+  "warning":    #ff938a,  // Atención — rojo cálido
+  "enunciado":  #ffca28,  // Enunciado — ámbar
+  "resolucion": #4db6ac,  // Resolución — teal
+);
+
+@each $nombre, $acento in $callouts-acentos {
+  p.#{$nombre},
+  blockquote.#{$nombre} {
+    background-color: rgba($acento, 0.08);
+    border: 1px solid rgba($acento, 0.28);
+    border-left: 0.25rem solid $acento;
+
+    &::before { color: $acento; }   // título (Nota, Importante, …)
+  }
+}
+
 // ─── Sidebar nav ─────────────────────────────────────────────────────────────
 
 .nav-list .nav-list-item .nav-list-link {
