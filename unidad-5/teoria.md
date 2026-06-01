@@ -73,13 +73,14 @@ Las propiedades temporales que deben especificarse y respetarse:
 
 El modelo de referencia es el **sensor–sistema–actuador**, basado en el ciclo estímulo/respuesta:
 
-```
-        estímulo                          respuesta
-  Entorno  ──►  [ SENSORES ] ──► [ SISTEMA DE      ] ──► [ ACTUADORES ] ──►  Entorno
-   físico       (entrada)         CONTROL / NÚCLEO ]      (salida)            físico
-                                  (procesos + RTOS)
-                  ▲                                              │
-                  └──────────────── lazo de control ────────────┘
+```mermaid
+%%{init: {'theme':'dark'}}%%
+flowchart LR
+    E1([Entorno físico]) -->|estímulo| S["Sensores<br/>(entrada)"]
+    S --> C["Sistema de control / núcleo<br/>(procesos + RTOS)"]
+    C --> A["Actuadores<br/>(salida)"]
+    A -->|respuesta| E2([Entorno físico])
+    A -. lazo de control / realimentación .-> S
 ```
 
 Componentes:
@@ -129,14 +130,16 @@ Una tarea atraviesa estados gestionados por el planificador:
 - **Bloqueada / En espera (blocked/waiting):** espera un recurso, un evento o un mensaje; no compite por la CPU.
 - **Suspendida / Dormida (suspended):** inactiva hasta su próxima activación (típico de tareas periódicas entre períodos).
 
-```
-            despacho
-   READY ───────────────► RUNNING
-     ▲  ◄───────────────    │  │
-     │   apropiación         │  │ pide recurso / espera evento
-     │   (preemption)        │  ▼
-     │                      BLOCKED
-     └──── recurso/evento listo ◄──┘
+```mermaid
+%%{init: {'theme':'dark'}}%%
+stateDiagram-v2
+    [*] --> Ready
+    Ready --> Running: despacho
+    Running --> Ready: apropiación (preemption)
+    Running --> Blocked: pide recurso / espera evento
+    Blocked --> Ready: recurso / evento listo
+    Running --> Suspended: fin de período
+    Suspended --> Ready: próxima activación
 ```
 
 ## Mecanismos de sincronización
@@ -280,19 +283,22 @@ Con estas reglas se modelan patrones fundamentales:
 
 Dos tareas (T1 y T2) deben acceder a un recurso compartido en exclusión mutua. Un lugar **Mutex** contiene **1 token** que representa el cerrojo disponible:
 
+```mermaid
+%%{init: {'theme':'dark'}}%%
+flowchart TB
+    P1((P1_listo)) --> T1[tomar_1]
+    P2((P2_listo)) --> T2[tomar_2]
+    M(("Mutex ●<br/>(1 token)")) --> T1
+    M --> T2
+    T1 --> C1((P1_critica))
+    T2 --> C2((P2_critica))
+    C1 --> L1[liberar_1]
+    C2 --> L2[liberar_2]
+    L1 -. devuelve token .-> M
+    L2 -. devuelve token .-> M
 ```
-   (P1_listo)                                  (P2_listo)
-       |                                            |
-       v                                            v
-   [tomar_1] <---- (Mutex: ●) ----> [tomar_2]
-       |                ^   ^                        |
-       v                |   |                        v
-   (P1_critica)         |   |                  (P2_critica)
-       |                |   |                        |
-       v                |   |                        v
-   [liberar_1] --------- ---------- [liberar_2]
-       (devuelve token a Mutex)
-```
+
+Los **círculos** son *lugares* (estados con tokens) y los **rectángulos** son *transiciones* (eventos). El lugar `Mutex` arranca con **1 token**: alimenta a `tomar_1` y `tomar_2`, pero al dispararse una transición consume ese único token, por lo que la otra queda inhabilitada hasta que el `liberar` correspondiente lo devuelve.
 
 Lectura del modelo:
 

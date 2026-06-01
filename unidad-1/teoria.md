@@ -170,21 +170,9 @@ Dividir el software en más módulos **reduce el esfuerzo de desarrollo de cada 
 
 Existe entonces una **cantidad óptima de módulos** (región M en la figura clásica de Pressman) que minimiza el **costo total**:
 
-```text
-costo total = costo por módulo + costo de integración
+**costo total = costo por módulo + costo de integración**
 
-costo
-  |\                              /
-  | \  costo/módulo            /  costo de integración
-  |  \                       /
-  |   \                    /
-  |    \________      ___/
-  |            \    /
-  |  costo TOTAL \  /  <-- mínimo en la región M (óptimo)
-  |               \/
-  |               M
-  +------------------------------> número de módulos
-```
+![Curva de costo total en función del número de módulos: el costo por módulo decrece, el costo de integración crece, y la suma (costo total) tiene un mínimo en la región M, que marca la cantidad óptima de módulos.]({{ '/assets/img/costo-modularidad.svg' | relative_url }})
 
 {: .note }
 > Conclusión de Pressman: hay que **modularizar lo suficiente**, pero **no en exceso**. Demasiado pocos módulos producen componentes complejos e inmanejables; demasiados, un costo de integración prohibitivo.

@@ -12,7 +12,7 @@ color_scheme: dark
 search_enabled: true
 heading_anchors: true
 
-callouts_level: quiet
+callouts_level: loud
 callouts:
   note:
     title: Nota
@@ -36,6 +36,10 @@ aux_links:
 
 exclude:
   - CLAUDE.md
+
+mermaid:
+  # Diagramas embebidos en bloques ```mermaid (cargado desde CDN por el tema).
+  version: "10.6.1"
 
 plugins:
   - jekyll-remote-theme

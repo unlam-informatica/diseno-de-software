@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 380" font-family="-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" role="img" aria-label="Curva de costo total en función del número de módulos: el costo por módulo decrece, el costo de integración crece, y el costo total tiene un mínimo en la región M (óptimo).">
+  <rect x="0" y="0" width="660" height="380" rx="10" fill="#0d1117"/>
+
+  <!-- Ejes -->
+  <g stroke="#8b949e" stroke-width="1.5" fill="none">
+    <path d="M70,40 L70,310 L610,310"/>
+    <!-- flechas -->
+    <path d="M70,40 l-5,9 M70,40 l5,9" stroke-linecap="round"/>
+    <path d="M610,310 l-9,-5 M610,310 l-9,5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Etiquetas de ejes -->
+  <text x="40" y="180" fill="#c9d1d9" font-size="15" transform="rotate(-90 40,180)" text-anchor="middle">Costo</text>
+  <text x="340" y="352" fill="#c9d1d9" font-size="15" text-anchor="middle">Número de módulos</text>
+
+  <!-- Costo por módulo (decreciente) -->
+  <path d="M90,85 C230,250 420,278 590,288" fill="none" stroke="#58a6ff" stroke-width="3"/>
+  <!-- Costo de integración (creciente) -->
+  <path d="M90,290 C270,278 430,205 590,80" fill="none" stroke="#f0883e" stroke-width="3"/>
+  <!-- Costo total (suma, forma de U) -->
+  <path d="M90,70 C200,250 285,266 335,263 C400,260 480,200 590,90" fill="none" stroke="#3fb950" stroke-width="3.5"/>
+
+  <!-- Región / punto óptimo M -->
+  <line x1="335" y1="263" x2="335" y2="310" stroke="#d29922" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <circle cx="335" cy="263" r="5" fill="#d29922"/>
+  <text x="335" y="330" fill="#d29922" font-size="13" font-weight="bold" text-anchor="middle">M (óptimo)</text>
+
+  <!-- Leyenda -->
+  <g font-size="13" fill="#c9d1d9">
+    <line x1="400" y1="52" x2="428" y2="52" stroke="#58a6ff" stroke-width="3"/>
+    <text x="436" y="56">costo por módulo</text>
+    <line x1="400" y1="74" x2="428" y2="74" stroke="#f0883e" stroke-width="3"/>
+    <text x="436" y="78">costo de integración</text>
+    <line x1="400" y1="96" x2="428" y2="96" stroke="#3fb950" stroke-width="3.5"/>
+    <text x="436" y="100">costo TOTAL</text>
+  </g>
+</svg>
