@@ -11,7 +11,7 @@ Apuntes de **teoría** de la asignatura **3648 — Diseño de Software** (Trayec
 El material está pensado para **estudiar para los parciales**: cada unidad resume los conceptos centrales con el tratamiento que les da la bibliografía recomendada (Sommerville, Pressman & Maxim, GoF y Larman).
 
 {: .note }
-> **Estado:** por ahora el sitio contiene únicamente la teoría. Los ejercicios y casos prácticos se agregarán más adelante.
+> **Estado:** el sitio reúne la **teoría** de las seis unidades y una sección de **prácticas** con los casos de la guía, que se irá completando.
 
 ---
 
@@ -34,6 +34,9 @@ Arquitectura de tiempo real: sensores, actuadores y núcleo. Tareas, sincronizac
 
 ### [Unidad 6 — Interfaz Hombre-Computadora](./unidad-6/)
 UX vs UI. Principios de las interfaces, diseño de contenidos, menús, íconos y tablas. Proceso de diseño centrado en el usuario. Comercio electrónico e interacción hombre-máquina.
+
+### [Prácticas](./practicas/)
+Resolución de los casos de la guía de ejercicios (casos de uso, clases candidatas según Larman y diagramas UML). Una página por práctica.
 
 ---
 

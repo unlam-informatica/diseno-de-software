@@ -46,6 +46,8 @@ _config.yml              # Config Jekyll/just-the-docs (title, baseurl, callouts
 index.md                 # Home: índice de unidades, evaluación y bibliografía
 unidad-N/index.md        # Landing de cada unidad (overview + temas + bibliografía)
 unidad-N/teoria.md       # Teoría de la unidad (página hija)
+practicas/index.md       # Landing de la sección Prácticas (casos prácticos resueltos)
+practicas/practica-N.md  # Resolución de cada caso de la guía (una página por práctica)
 _sass/custom/*.scss      # Overrides de estilo del tema
 _includes/head_custom.html, assets/js/page-toc.js   # TOC de página (columna derecha)
 reference/               # PDFs fuente de la cátedra (excluidos del build)
@@ -57,7 +59,7 @@ reference/               # PDFs fuente de la cátedra (excluidos del build)
 - Cada unidad es una carpeta `unidad-N/` con un `index.md` como página de sección (`has_children: true`, `has_toc: false`, `nav_order: N+1`, título `Unidad N — <tema>`).
 - `has_toc: false` desactiva la "Table of contents" automática de páginas hijas que just-the-docs agrega en las páginas con `has_children`. El TOC de cada página lo genera `assets/js/page-toc.js` en la columna derecha; no usar TOC manual (`{:toc}`) ni el automático del tema.
 - La teoría va en `unidad-N/teoria.md` como **página hija** (`parent: "Unidad N — <tema>"`).
-- Los futuros ejercicios irán como otra página hija (`ejercicios.md`) en la misma carpeta.
+- Los **casos prácticos** viven en su propia sección `practicas/` (`index.md` con `has_children: true`, `has_toc: false`, `nav_order: 8`, título `Prácticas`). **Una página por práctica**: `practicas/practica-N.md` como página hija (`parent: "Prácticas"`, `nav_order: N`), donde N es el número de caso en la guía de ejercicios.
 
 ### Callouts disponibles
 
