@@ -1,0 +1,42 @@
+title: Diseño de Software
+description: Apuntes de teoría y material de estudio — Diseño de Software (3648) · UNLaM
+
+remote_theme: just-the-docs/just-the-docs
+
+url: https://unlam-informatica.github.io
+baseurl: /diseno-de-software
+favicon_ico: "/assets/favicon/favicon.ico"
+
+color_scheme: dark
+
+search_enabled: true
+heading_anchors: true
+
+callouts_level: quiet
+callouts:
+  note:
+    title: Nota
+    color: blue
+  important:
+    title: Importante
+    color: yellow
+  warning:
+    title: Atención
+    color: red
+  enunciado:
+    title: Enunciado
+    color: amber
+  resolucion:
+    title: Resolución
+    color: teal
+
+aux_links:
+  "GitHub":
+    - "https://github.com/unlam-informatica/diseno-de-software"
+
+exclude:
+  - CLAUDE.md
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag
