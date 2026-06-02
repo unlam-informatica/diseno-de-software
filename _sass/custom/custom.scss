@@ -33,11 +33,50 @@
     font-size: 0.875rem;
   }
 
+  // ─── Tablas (UX dark mode) ───────────────────────────────────────────────
+  // Encabezado diferenciado, filas cebra, hover y esquinas redondeadas para
+  // facilitar el escaneo vertical y la lectura de tablas comparativas.
   table {
+    display: table;            // anula el `display: block` del tema (que rompe el ancho)
+    width: 100%;
     font-size: 0.9rem;
+    margin: 1rem 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;          // recorta las celdas a las esquinas redondeadas
 
-    th { padding: 0.6rem 1rem; }
-    td { padding: 0.5rem 1rem; }
+    th,
+    td {
+      padding: 0.6rem 1rem;
+      border: none;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+
+    thead th {
+      background-color: rgba(255, 255, 255, 0.05);
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid rgba(121, 192, 255, 0.4);   // acento azul sutil
+    }
+
+    tbody tr {
+      transition: background-color 0.12s ease;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.025);
+    }
+
+    tbody tr:hover {
+      background-color: rgba(121, 192, 255, 0.1);          // resalta la fila al pasar
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;                                  // sin línea bajo la última fila
+    }
   }
 
   // blockquote {

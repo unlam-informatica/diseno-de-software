@@ -9,7 +9,29 @@ nav_order: 1
 Resolución del **Ejercicio 1** de la guía de la cátedra. Es un caso integral de **análisis y diseño orientado a objetos** (casos de uso → clases candidatas según Larman → diagramas UML). El alcance del modelado se centra en el **canal de venta online** (e-commerce), que es la parte detallada del enunciado.
 
 {: .enunciado }
-> **Parafarma** es una cadena de farmacias de Buenos Aires con dos canales de venta: mostrador tradicional y **compras online** (cosmética, salud y nutrición, higiene; por este canal **no** se venden medicamentos). Para comprar online, la persona debe **registrarse como cliente**. Arma su pedido **seleccionando productos del catálogo** e indicando **cantidades**; luego indica el **domicilio de entrega**. Hay dos **modalidades de envío**: (1) a un **domicilio** donde lo reciba una persona mayor de edad de 9 a 18 h —el **costo varía según el valor de la compra y la zona**— o (2) **retiro en una sucursal** sin costo. La **compra mínima es de $300**. Finalmente el cliente paga **únicamente con tarjeta de crédito**; verificado el pago, recibe un **correo de confirmación con la factura electrónica** (Res. Gral. AFIP N.º 2975).
+> Parafarma es una cadena de farmacias que brinda servicios en distintas localidades de Buenos Aires. Ofrece a sus clientes dos canales de venta, por una parte, la venta de modo tradicional en mostrador, y, por otra parte, brinda la posibilidad de realizar compras online de productos de distintos rubros como cosmética y belleza, salud y nutrición, higiene, entre otros; vale aclarar que por este canal NO se venden ni publicitan especialidades medicinales, ni medicamentos de venta libre o de venta bajo receta.
+>
+> La persona que desee comprar debe haberse registrado como cliente, los datos a registrar son los que permitan su identificación, con los que puede ingresar en las visitas futuras y realizar un seguimiento sobre sus compras.
+>
+> Para agregar un producto al carrito de compras el cliente debe seleccionarlo desde el catálogo, e indicar la cantidad de unidades. Una vez que ha seleccionado todos los productos deseados deberá indicar el domicilio de entrega de la compra.
+>
+> Se ofrece dos modalidades de envío. La primera es seleccionar un domicilio donde pueda ser recibido por una persona mayor de edad en el horario de 9 a 18 horas, el costo del envío varía en relación al valor de la compra y la zona de entrega; y la segunda es seleccionar una sucursal de la farmacia para retirar el pedido personalmente, sin costos adicionales.
+>
+> En ambos casos, la compra mínima online es de $300.
+>
+> Por último, el cliente indica los datos para el pago. El portal trabaja únicamente con pago por tarjeta de crédito, una vez verificado el mismo, el cliente recibe un correo de confirmación con la factura emitida electrónicamente de acuerdo a la Res. General N°2975 de AFIP, sus modificatorias y complementarias.
+>
+> Se solicita realizar:
+>
+> 1- CASOS DE USO  
+> 2- DIAGRAMA DE CASOS DE USO  
+> 3- DIAGRAMA DE ACTIVIDAD  
+> 4- LISTA DE CLASES CANDIDATAS (según frases conceptuales de Larman)  
+> 5- LISTA DE CLASES CANDIDATAS (según frases listas de categoría de Larman)  
+> 6- DIAGRAMA DE CLASES BASICO  
+> 7- DIAGRAMA DE ESTADO  
+> 8- DIAGRAMA DE SECUENCIA  
+> 9- DIAGRAMA DE COMUNICACIONES
 
 ---
 
@@ -42,7 +64,7 @@ Resolución del **Ejercicio 1** de la guía de la cátedra. Es un caso integral 
 {: .resolucion }
 > **Actor principal:** Cliente · **Personal involucrado:** Sistema de Pago, Facturación AFIP, Servicio de Correo.
 >
-> **Precondiciones:** el cliente está **registrado y autenticado**; el catálogo está disponible; el carrito tiene al menos un producto.
+> **Precondiciones:** el cliente está **registrado**; el catálogo está disponible; el carrito tiene al menos un producto.
 >
 > **Postcondiciones (éxito):** la compra queda **registrada y pagada**; se **emite y envía la factura electrónica**; el pedido pasa a preparación.
 >
@@ -61,8 +83,8 @@ Resolución del **Ejercicio 1** de la guía de la cátedra. Es un caso integral 
 > 10. El sistema **envía el correo de confirmación** con la factura y muestra la confirmación.
 >
 > **Flujos alternativos:**
+> - **1a. Cliente no autenticado:** se invoca CU2 (Autenticarse); si no tiene cuenta, CU1 (Registrarse).
 > - **4a. Monto < $300:** el sistema informa el mínimo y no permite avanzar.
-> - **7a. Cliente no autenticado:** se invoca CU2 (Autenticarse) o CU1 (Registrarse).
 > - **8a. Pago rechazado:** el sistema informa, el pedido queda *pendiente de pago* y se vuelve al paso 6.
 
 ### CU1 — Registrarse como cliente (breve)
@@ -225,6 +247,10 @@ classDiagram
       +cantidad
       +importe()
     }
+    class LineaDePedido {
+      +cantidad
+      +importe()
+    }
     class Producto {
       +codigo
       +nombre
@@ -281,11 +307,12 @@ classDiagram
 
     Cliente "1" --> "0..*" Pedido : realiza
     Cliente "1" --> "1" Carrito : posee
-    Carrito "1" *-- "0..*" ItemCarrito
+    Carrito "1" o-- "0..*" ItemCarrito
     ItemCarrito "0..*" --> "1" Producto
     Catalogo "1" o-- "0..*" Producto
     Producto "0..*" --> "1" Rubro
-    Pedido "1" *-- "1..*" ItemCarrito
+    Pedido "1" *-- "1..*" LineaDePedido
+    LineaDePedido "0..*" --> "1" Producto
     Pedido "1" --> "1" ModalidadEnvio
     ModalidadEnvio <|-- EnvioADomicilio
     ModalidadEnvio <|-- RetiroEnSucursal
@@ -297,18 +324,19 @@ classDiagram
     Pedido "1" --> "1" Factura
 ```
 
+{: .note }
+> El **`Carrito`** es transitorio y *agrega* `ItemCarrito` (rombo hueco). Al **confirmar la compra**, esos ítems se materializan en las **`LineaDePedido`** del `Pedido`, que sí las *compone* (rombo lleno): existen y se destruyen con el pedido. Por eso son dos clases distintas y no la misma compartida por dos compuestos.
+
 ---
 
 ## 7. Diagrama de estado
 
-Ciclo de vida del objeto **Pedido**, desde que se arma el carrito hasta la entrega.
+Ciclo de vida del objeto **Pedido**, que nace al confirmar el carrito y termina con la entrega.
 
 ```mermaid
 %%{init: {'theme':'dark'}}%%
 stateDiagram-v2
-    [*] --> EnArmado : crear carrito
-    EnArmado --> EnArmado : agregar / quitar producto
-    EnArmado --> PendienteDePago : confirmar (monto ≥ $300)
+    [*] --> PendienteDePago : confirmar carrito (monto ≥ $300)
     PendienteDePago --> Pagado : pago aprobado
     PendienteDePago --> Rechazado : pago rechazado
     Rechazado --> PendienteDePago : reintentar
@@ -376,7 +404,7 @@ flowchart LR
     C -->|"1: finalizarCompra()"| P
     P -->|"2: obtenerItems()"| Ca
     P -->|"3: crear(items, envio)"| Pe
-    P -->|"4: pagar(tarjeta)"| P
+    C -->|"4: pagar(tarjeta)"| P
     P -->|"5: autorizar(tarjeta, total)"| SP
     P -->|"6: registrarPago()"| Pe
     P -->|"7: emitirFactura(pedido)"| F

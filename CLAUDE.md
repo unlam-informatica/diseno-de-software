@@ -75,6 +75,7 @@ Definidos en `_config.yml`: `enunciado` (ámbar) y `resolución` (teal), además
 - **Idioma:** español. Términos técnicos consagrados en inglés se pueden dejar en inglés (p. ej. *Singleton*, *coupling*) aclarando la traducción la primera vez.
 - **Estructura por página:** encabezados `##` y `###` para que el TOC de página (derecha) se genere bien. Evitar saltar de `##` a `####`.
 - **Enfoque de estudio:** priorizar definiciones claras, comparaciones (tablas), ejemplos breves y "para el parcial" sobre extensión. Citar a qué autor/enfoque corresponde cada tema cuando sea relevante.
+- **Enunciado textual de las prácticas (obligatorio):** al armar una práctica, el callout `enunciado` debe contener el **enunciado completo y exacto** del caso tal como figura en `reference/ejercicios.pdf`, copiado **palabra por palabra**. **No** modificar, resumir, parafrasear, reordenar, abreviar, "mejorar" la redacción ni omitir nada — incluida la lista «Se solicita realizar». Conservar la puntuación, mayúsculas y referencias originales (p. ej. *Res. General N°2975 de AFIP*). Cualquier encuadre, aclaración de alcance o comentario propio va **fuera** del callout `enunciado`.
 - **Frontmatter mínimo** en páginas hijas:
 
   ```yaml
