@@ -5,7 +5,6 @@ remote_theme: just-the-docs/just-the-docs
 
 url: https://unlam-informatica.github.io
 baseurl: /diseno-de-software
-favicon_ico: "/assets/favicon/favicon.ico"
 
 color_scheme: dark
 
