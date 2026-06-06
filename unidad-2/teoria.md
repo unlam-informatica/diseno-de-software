@@ -14,6 +14,20 @@ La idea central es que el diseño es una actividad de **traducción y compromiso
 {: .note }
 > Una solución de software es "buena" no cuando es perfecta, sino cuando satisface los requisitos respetando las restricciones y equilibrando los atributos de calidad que el negocio prioriza.
 
+Desde la bibliografía principal de la cátedra, esta unidad se conecta especialmente con **Larman**: antes de asignar responsabilidades a objetos hay que comprender el negocio, sus actores, sus casos de uso, sus reglas y sus conceptos de dominio. **GoF** aparece más adelante, cuando algunas decisiones de diseño pueden resolverse reutilizando patrones conocidos.
+
+```mermaid
+flowchart LR
+    A["Problema de negocio"] --> B["Proceso de negocio"]
+    B --> C["Requisitos"]
+    C --> D["Atributos de calidad y restricciones"]
+    D --> E["Diseno de software"]
+    E --> F["Solucion de software"]
+    F --> G["Adopcion y evolucion"]
+```
+
+El recorrido no es lineal una sola vez: cada validación con usuarios o restricción descubierta puede obligar a volver hacia requisitos, proceso o diseño.
+
 ## Del problema de negocio a la solución de software
 
 ### Dominio del problema y dominio de la solución
@@ -22,6 +36,41 @@ La idea central es que el diseño es una actividad de **traducción y compromiso
 - **Dominio de la solución**: el espacio del sistema de software que construimos. Está hecho de componentes, módulos, datos, interfaces y tecnología. Se describe en el **lenguaje técnico**.
 
 El trabajo de ingeniería consiste en **transitar** del primero al segundo sin perder la trazabilidad: cada decisión técnica debería poder justificarse en función de una necesidad del negocio.
+
+```mermaid
+flowchart TB
+    subgraph Problema["Dominio del problema"]
+        PN["Procesos de negocio"]
+        RN["Reglas de negocio"]
+        ACT["Actores / usuarios"]
+        OBJ["Objetivos"]
+    end
+
+    subgraph Puente["Analisis y diseno"]
+        CU["Casos de uso"]
+        MD["Modelo de dominio"]
+        ASR["Atributos de calidad y restricciones"]
+    end
+
+    subgraph Solucion["Dominio de la solucion"]
+        ARQ["Arquitectura"]
+        MOD["Modulos / clases"]
+        INT["Interfaces"]
+        DAT["Datos"]
+    end
+
+    PN --> CU
+    RN --> MD
+    ACT --> CU
+    OBJ --> ASR
+    CU --> ARQ
+    MD --> MOD
+    ASR --> ARQ
+    ARQ --> INT
+    ARQ --> DAT
+```
+
+En términos de Larman, el **modelo de dominio** ayuda a nombrar y entender los conceptos del problema; luego el **modelo de diseño** decide qué clases de software, responsabilidades y colaboraciones implementan los casos de uso.
 
 ### El recorrido típico
 
@@ -69,6 +118,20 @@ El proceso de negocio define **qué debe soportar** el sistema. Muchas actividad
 {: .note }
 > Primero se entiende y (a veces) se rediseña el proceso de negocio; después se diseña el software que lo soporta. Automatizar un mal proceso solo produce un mal proceso más rápido.
 
+**Ejemplo simple: pedido de compra**
+
+```mermaid
+flowchart LR
+    A["Cliente solicita pedido"] --> B["Vendedor registra pedido"]
+    B --> C{"Hay stock?"}
+    C -- "Si" --> D["Sistema reserva stock"]
+    C -- "No" --> E["Sistema informa faltante"]
+    D --> F["Deposito prepara entrega"]
+    F --> G["Cliente recibe pedido"]
+```
+
+De este proceso salen requisitos funcionales ("registrar pedido", "consultar stock", "reservar stock") y restricciones o reglas ("no reservar si no hay stock", "avisar faltantes"). El diseño posterior debe asignar esas responsabilidades a objetos, servicios o componentes.
+
 ## Procesos de software
 
 ### Definición
@@ -115,6 +178,16 @@ Aunque ambos son "procesos", apuntan a cosas distintas y se relacionan de forma 
 
 **Relación**: el proceso de software es el medio para construir el sistema que **soporta** el proceso de negocio. Los requisitos del software provienen, en gran medida, del análisis de los procesos de negocio.
 
+```mermaid
+flowchart LR
+    PN["Proceso de negocio"] --> REQ["Requisitos del software"]
+    REQ --> PS["Proceso de software"]
+    PS --> INC["Incrementos / producto"]
+    INC --> PN
+```
+
+La flecha de retorno indica aprendizaje: cuando el software se usa, el negocio detecta ajustes, mejoras y nuevas necesidades.
+
 ## Gobierno de procesos (process governance)
 
 ### Qué es
@@ -140,6 +213,17 @@ En el ámbito del software, la mejora de procesos se apoya en marcos como **CMMI
 {: .note }
 > Gobierno (governance) ≠ gestión (management). El gobierno define el marco, las políticas y la rendición de cuentas; la gestión ejecuta dentro de ese marco.
 
+```mermaid
+flowchart LR
+    A["Definir proceso"] --> B["Ejecutar"]
+    B --> C["Medir"]
+    C --> D["Controlar desviaciones"]
+    D --> E["Mejorar"]
+    E --> A
+```
+
+El gobierno evita que el proceso dependa solamente de esfuerzos individuales: define responsables, criterios de medición, estándares y mecanismos de mejora.
+
 ## Roles en el diseño y desarrollo
 
 El éxito de una solución depende de la colaboración de múltiples roles, cada uno con responsabilidades específicas.
@@ -158,6 +242,24 @@ El éxito de una solución depende de la colaboración de múltiples roles, cada
 
 {: .note }
 > Una misma persona puede asumir varios roles (especialmente en equipos chicos), y los nombres varían según el marco (ágil vs. tradicional). Lo importante es que las responsabilidades estén cubiertas.
+
+### Roles vistos como responsabilidades
+
+La idea de **responsabilidad** no aplica solo a objetos de software; también sirve para entender roles de trabajo. Si un rol no tiene una responsabilidad clara, aparecen huecos, duplicación de tareas o decisiones contradictorias.
+
+```mermaid
+flowchart TB
+    ST["Stakeholders"] -->|necesidades y validacion| AN["Analista"]
+    PO["Product Owner"] -->|prioridades| AN
+    AN -->|requisitos y casos de uso| ARQ["Arquitecto"]
+    ARQ -->|lineamientos y trade-offs| DIS["Disenador"]
+    DIS -->|modelo de diseno| DEV["Desarrollador"]
+    DEV -->|incremento| QA["QA / Tester"]
+    QA -->|defectos y evidencia| PO
+    DEV --> OPS["DevOps / Operaciones"]
+```
+
+Este flujo no reemplaza una metodología, pero ayuda a ver cómo circulan decisiones y artefactos desde el negocio hasta la operación.
 
 ## Solución de software
 
@@ -181,6 +283,37 @@ La solución se especifica a través de los **requisitos** y del **diseño**. La
 - **Dentro de qué límites** (restricciones).
 
 Estos tres ejes guían y restringen las decisiones de diseño.
+
+### De requisitos a responsabilidades
+
+En un diseño orientado a objetos, los requisitos no se convierten directamente en código. Primero se interpretan como **eventos del sistema**, operaciones, conceptos del dominio y responsabilidades.
+
+| Entrada | Pregunta | Salida de diseño |
+|---|---|---|
+| Caso de uso | ¿Qué interacción debe soportar el sistema? | Operaciones del sistema y colaboraciones. |
+| Regla de negocio | ¿Qué condición debe respetarse siempre? | Responsabilidad asignada a una clase/servicio. |
+| Concepto de dominio | ¿Qué información y comportamiento tiene sentido agrupar? | Clase candidata o entidad del modelo. |
+| Atributo de calidad | ¿Qué cualidad condiciona la estructura? | Decisión arquitectónica. |
+| Restricción | ¿Qué alternativa queda prohibida u obligada? | Límite de diseño. |
+
+```mermaid
+sequenceDiagram
+    actor Usuario
+    participant Sistema
+    participant Controlador
+    participant Dominio
+    participant Infraestructura
+
+    Usuario->>Sistema: solicita operacion
+    Sistema->>Controlador: evento del sistema
+    Controlador->>Dominio: delega responsabilidad
+    Dominio->>Infraestructura: usa servicio necesario
+    Infraestructura-->>Dominio: resultado
+    Dominio-->>Controlador: respuesta de negocio
+    Controlador-->>Sistema: resultado para usuario
+```
+
+La secuencia muestra una idea clave de Larman: el controlador coordina el caso de uso, pero la lógica de negocio debería quedar en objetos o servicios del dominio, no concentrada en la interfaz.
 
 ## Requisitos: funcionales y no funcionales
 
@@ -225,6 +358,21 @@ Los atributos **compiten entre sí**: mejorar uno suele perjudicar a otro. El di
 {: .note }
 > No se puede maximizar todo. El arquitecto prioriza los atributos críticos para el negocio y diseña aceptando concesiones (trade-offs) en los demás.
 
+```mermaid
+flowchart TB
+    REQ["Requisito no funcional critico"] --> DEC["Decision arquitectonica"]
+    DEC --> POS["Beneficio esperado"]
+    DEC --> COSTO["Costo / trade-off"]
+
+    subgraph Ejemplo["Ejemplo"]
+        A["Alta disponibilidad"] --> B["Redundancia"]
+        B --> C["Menos interrupciones"]
+        B --> D["Mayor costo y complejidad"]
+    end
+```
+
+Los atributos de calidad son una de las razones por las que el diseño no puede derivarse mecánicamente de los requisitos funcionales.
+
 ## Restricciones del diseño (design constraints)
 
 Las **restricciones** son condiciones **impuestas** que limitan el espacio de soluciones. A diferencia de los atributos de calidad (que se optimizan), las restricciones **se cumplen o no**.
@@ -238,6 +386,18 @@ Las **restricciones** son condiciones **impuestas** que limitan el espacio de so
 | **Organizacionales** | Estándares corporativos, capacidades del equipo, infraestructura existente. |
 
 Las restricciones **reducen las alternativas** de diseño y deben identificarse temprano, porque condicionan la arquitectura tanto como los requisitos.
+
+### Diferencia entre atributo y restricción
+
+| Aspecto | Atributo de calidad | Restricción |
+|---|---|---|
+| Naturaleza | Cualidad a optimizar o equilibrar. | Condición impuesta. |
+| Evaluación | Puede tener grados: mejor/peor, más/menos. | Se cumple o no se cumple. |
+| Ejemplo | "Responder en menos de 2 segundos". | "Usar PostgreSQL por estándar corporativo". |
+| Impacto | Orienta decisiones y trade-offs. | Descarta alternativas. |
+
+{: .note }
+> Una restricción puede empeorar un atributo de calidad. Por ejemplo, una plataforma obligatoria puede limitar rendimiento o escalabilidad; el diseño debe reconocer ese compromiso.
 
 ## Adopción del software
 
@@ -263,9 +423,24 @@ Es la oposición —activa o pasiva— de los usuarios al nuevo sistema. Causas 
 {: .note }
 > La calidad técnica es necesaria pero no suficiente. Muchos proyectos técnicamente correctos fracasan por una mala adopción.
 
+```mermaid
+flowchart LR
+    A["Solucion disponible"] --> B["Capacitacion"]
+    A --> C["Comunicacion"]
+    A --> D["Soporte"]
+    B --> E["Uso efectivo"]
+    C --> E
+    D --> E
+    E --> F["Valor para el negocio"]
+    E --> G["Feedback para evolucion"]
+```
+
+La adopción cierra el ciclo iniciado en el proceso de negocio: el software solo valida su diseño cuando genera valor real en operación.
+
 ## En síntesis (para el parcial)
 
 - El diseño transita del **dominio del problema** (procesos de negocio) al **dominio de la solución** (software), manteniendo trazabilidad.
+- Desde **Larman**, ese tránsito pasa por casos de uso, modelo de dominio y asignación de responsabilidades; desde **GoF**, algunas decisiones pueden reutilizar patrones probados cuando corresponda.
 - Un **proceso de negocio** genera valor y se modela con **BPMN**; define qué debe soportar el sistema. Un **proceso de software** es cómo construimos ese sistema; sus actividades (Sommerville) son **especificación, diseño/implementación, validación y evolución**.
 - Modelos de proceso: **cascada**, **incremental**, **integración y configuración** y **ágil** (Sommerville); espiral y prototipado (Pressman & Maxim).
 - El **gobierno de procesos** alinea, controla y mejora los procesos (CMMI, ISO); gobierno ≠ gestión.
@@ -274,3 +449,17 @@ Es la oposición —activa o pasiva— de los usuarios al nuevo sistema. Causas 
 - Los **atributos de calidad** (rendimiento, seguridad, disponibilidad, mantenibilidad, etc.) compiten: el diseño gestiona **trade-offs**.
 - Las **restricciones** (técnicas, de negocio, regulatorias, de tiempo/costo) limitan las soluciones y se cumplen sí o sí.
 - La **adopción** define el éxito real: requiere gestión del cambio, capacitación y manejo de la resistencia.
+
+### Cobertura del programa de la unidad 2
+
+| Tema indicado en el programa.pdf | Dónde aparece en estos apuntes |
+|---|---|
+| Del diseño de sistemas al diseño de software | Introducción; dominio del problema y solución; solución de software |
+| Procesos de negocio | Sección "Procesos de negocio" |
+| Procesos de software | Sección "Procesos de software" |
+| Gobierno de procesos | Sección "Gobierno de procesos" |
+| Roles | Sección "Roles en el diseño y desarrollo" |
+| Solución de software | Sección "Solución de software" |
+| Atributos de calidad | Sección "Atributos de calidad del software" |
+| Restricciones del diseño | Sección "Restricciones del diseño" |
+| Adopción del software | Sección "Adopción del software" |

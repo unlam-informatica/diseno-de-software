@@ -9,7 +9,7 @@ has_toc: false
 
 El **diseño de software** (*software design*) es la actividad de ingeniería que traduce los **requisitos** del cliente en una representación interna del sistema que sirve de plano (*blueprint*) para la construcción. Es el momento en el que se decide *cómo* se va a resolver el problema que los requisitos describen como *qué* hay que resolver. Si los requisitos responden "qué debe hacer el sistema", el diseño responde "cómo lo va a hacer".
 
-El diseño es, según Pressman, la actividad técnica central del proceso de software: es donde se toman las decisiones que determinan la calidad del producto final. Un mal diseño no se puede compensar con buena codificación; los defectos introducidos en esta fase son los más costosos de corregir si se detectan tarde.
+Desde el enfoque de la cátedra, el diseño se entiende principalmente como una actividad de **asignación de responsabilidades** y organización de colaboraciones entre objetos. Larman lo expresa en términos prácticos: diseñar es decidir qué objetos participan en la solución, qué conoce cada uno, qué hace cada uno y cómo se comunican. Pressman complementa esta idea al ubicar el diseño como la actividad técnica donde se toman muchas de las decisiones que determinan la calidad del producto final.
 
 {: .note }
 > El diseño es el "puente" entre el espacio del problema (requisitos, lo que el cliente necesita) y el espacio de la solución (código, lo que se construye). Es la primera de las tres actividades técnicas que producen el sistema: **diseño → construcción/codificación → prueba**.
@@ -44,7 +44,7 @@ El diseño se ubica en la actividad (2), justo después de la especificación de
 
 ### Entrada y salida: del modelo de requisitos al modelo de diseño
 
-Pressman describe el diseño como una transformación del **modelo de requisitos** en un **modelo de diseño** a través de cuatro elementos:
+Como apoyo general, Pressman describe el diseño como una transformación del **modelo de requisitos** en un **modelo de diseño** a través de cuatro elementos:
 
 | Modelo de requisitos (entrada) | Elemento del diseño (salida) |
 | --- | --- |
@@ -70,6 +70,44 @@ Una **responsabilidad** es una obligación de un objeto. Puede ser de dos tipos:
 > Para Larman, un buen diseño OO no se mide por tener muchas clases, sino por asignar bien las responsabilidades. Los patrones **GRASP** ayudan a decidir *quién debe hacer qué* para obtener bajo acoplamiento, alta cohesión y objetos comprensibles.
 
 Esta mirada conecta directamente con los conceptos de la unidad: si una clase recibe demasiadas responsabilidades pierde cohesión; si necesita conocer demasiados detalles de otras clases aumenta el acoplamiento; si oculta bien sus datos y ofrece una interfaz clara mejora la modularidad.
+
+**Ejemplo de responsabilidades en UML:**
+
+```mermaid
+classDiagram
+    class Venta {
+        +agregarLinea(producto, cantidad)
+        +calcularTotal()
+        +finalizar()
+    }
+
+    class LineaDeVenta {
+        +cantidad
+        +subtotal()
+    }
+
+    class Producto {
+        +descripcion
+        +precio
+    }
+
+    Venta "1" --> "*" LineaDeVenta : contiene
+    LineaDeVenta "*" --> "1" Producto : referencia
+```
+
+En este ejemplo, `Venta` no debería pedirle a otro objeto que calcule su total si ella conoce sus líneas. Esa asignación sigue el criterio de **Experto en Información** de Larman: asignar la responsabilidad al objeto que tiene la información necesaria para cumplirla.
+
+### Modelo conceptual vs. modelo de diseño
+
+En Larman es importante distinguir dos modelos que suelen confundirse:
+
+| Modelo | Describe | Pregunta que responde |
+| --- | --- | --- |
+| **Modelo conceptual / de dominio** | Conceptos relevantes del problema y sus relaciones | "¿Qué cosas existen en el dominio?" |
+| **Modelo de diseño** | Clases de software, métodos, visibilidad y colaboraciones | "¿Qué objetos de software resuelven el caso de uso?" |
+
+{: .note }
+> El modelo conceptual no es código. Una clase de dominio como `Venta` puede inspirar una clase de software `Venta`, pero el diseño agrega responsabilidades, métodos, interfaces y colaboraciones.
 
 ### Diseño preliminar (arquitectónico) vs. diseño detallado
 
@@ -136,6 +174,22 @@ Clase Venta
 ```
 
 La interfaz pública permite pedirle a la venta su total; el resto del sistema no necesita saber cómo recorre las líneas ni cómo aplica reglas de cálculo.
+
+```mermaid
+classDiagram
+    class Venta {
+        -lineasDeVenta
+        -fecha
+        +calcularTotal()
+    }
+    class LineaDeVenta {
+        -cantidad
+        +subtotal()
+    }
+    Venta "1" --> "*" LineaDeVenta
+```
+
+El diagrama muestra la abstracción como una frontera: desde afuera se usa `calcularTotal()`, mientras los detalles (`lineasDeVenta`, recorrido, fórmula de cálculo) quedan dentro de la clase.
 
 ### Abstracción procedimental
 
@@ -231,6 +285,16 @@ En un diseño OO, los módulos aparecen en distintos tamaños:
 
 Larman insiste en que la modularidad se consigue asignando responsabilidades de manera razonable. Una clase con demasiadas tareas se vuelve difícil de entender; una solución con demasiadas clases pequeñas puede generar más acoplamiento e integración innecesaria.
 
+```mermaid
+flowchart LR
+    A[Requisito / caso de uso] --> B[Responsabilidades]
+    B --> C[Objetos y clases]
+    C --> D[Colaboraciones]
+    D --> E[Modulos cohesivos y poco acoplados]
+```
+
+La modularidad no aparece por dividir al azar: aparece cuando las responsabilidades se agrupan en objetos y módulos que tienen sentido para resolver el caso de uso.
+
 ---
 
 ## Cohesión
@@ -288,6 +352,20 @@ Clase Venta:
 # y completar una venta.
 ```
 
+**Ejemplo de baja cohesión en una clase:**
+
+```mermaid
+classDiagram
+    class GestorSistema {
+        +mostrarPantallaVenta()
+        +calcularTotalVenta()
+        +guardarEnBaseDeDatos()
+        +enviarEmail()
+    }
+```
+
+`GestorSistema` mezcla interfaz, lógica de negocio, persistencia y notificaciones. Aunque sea una sola clase, no forma un módulo claro: tiene varias razones de cambio. Un rediseño razonable separaría responsabilidades.
+
 ---
 
 ## Acoplamiento
@@ -326,6 +404,31 @@ imprimir(datos)
 guardar(datos)   # cada módulo recibe solo lo que necesita
 ```
 
+**Ejemplo OO de acoplamiento bajo:**
+
+```mermaid
+classDiagram
+    class ServicioPago {
+        +cobrar(monto)
+    }
+    class MedioDePago {
+        <<interface>>
+        +autorizar(monto)
+    }
+    class TarjetaCredito {
+        +autorizar(monto)
+    }
+    class MercadoPago {
+        +autorizar(monto)
+    }
+
+    ServicioPago --> MedioDePago : usa
+    TarjetaCredito ..|> MedioDePago
+    MercadoPago ..|> MedioDePago
+```
+
+`ServicioPago` depende de una abstracción (`MedioDePago`) y no de una clase concreta. Esa decisión reduce el impacto de agregar o reemplazar proveedores de pago.
+
 Sommerville señala que el acoplamiento bajo y la cohesión alta están directamente vinculados con la **mantenibilidad**: los sistemas con módulos muy acoplados son frágiles porque un cambio se propaga en cadena.
 
 ---
@@ -363,6 +466,28 @@ Aunque los patrones GRASP se estudian con más detalle en la unidad 3, conviene 
 
 {: .note }
 > Unidad 1 presenta el criterio de calidad; unidad 3 muestra patrones concretos para aplicarlo. No son temas separados: GRASP operacionaliza cohesión, acoplamiento e independencia funcional en diseño OO.
+
+### Colaboración entre objetos
+
+La independencia funcional no significa que los objetos no colaboren. Significa que colaboran mediante interfaces claras y con dependencias necesarias. Un caso de uso se realiza por una red de mensajes entre objetos, no por una clase que hace todo.
+
+```mermaid
+sequenceDiagram
+    actor Cajero
+    participant ControladorVenta
+    participant Venta
+    participant LineaDeVenta
+    participant Producto
+
+    Cajero->>ControladorVenta: registrarItem(producto, cantidad)
+    ControladorVenta->>Venta: agregarLinea(producto, cantidad)
+    Venta->>LineaDeVenta: crear(producto, cantidad)
+    LineaDeVenta->>Producto: obtenerPrecio()
+    Producto-->>LineaDeVenta: precio
+    LineaDeVenta-->>Venta: linea creada
+```
+
+El controlador coordina el evento del sistema, pero no calcula todos los detalles. `Venta`, `LineaDeVenta` y `Producto` conservan responsabilidades propias.
 
 ---
 
@@ -471,6 +596,31 @@ Los patrones GoF se agrupan en tres familias:
 
 {: .note }
 > Para la unidad 1 alcanza con entender que los patrones son reutilización de experiencia de diseño. El estudio detallado de GoF corresponde a la unidad 3, pero su motivación nace acá: reducir acoplamiento, aumentar cohesión y diseñar para el cambio.
+
+**Ejemplo mínimo: Strategy como reutilización de diseño**
+
+```mermaid
+classDiagram
+    class CalculadoraEnvio {
+        +calcular(costoBase)
+    }
+    class EstrategiaEnvio {
+        <<interface>>
+        +calcular(costoBase)
+    }
+    class EnvioNormal {
+        +calcular(costoBase)
+    }
+    class EnvioExpress {
+        +calcular(costoBase)
+    }
+
+    CalculadoraEnvio --> EstrategiaEnvio : delega
+    EnvioNormal ..|> EstrategiaEnvio
+    EnvioExpress ..|> EstrategiaEnvio
+```
+
+El patrón no aporta código copiable; aporta una estructura de colaboración. La ventaja de diseño es que se pueden agregar nuevas formas de envío sin cambiar la lógica principal de `CalculadoraEnvio`.
 
 ---
 

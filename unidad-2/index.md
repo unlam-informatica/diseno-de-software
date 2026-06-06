@@ -20,5 +20,7 @@ Cómo se pasa del problema de negocio a una solución de software: **procesos de
 
 ## Bibliografía
 
-- Sommerville, *Software Engineering* (10.ª), procesos de software y requisitos.
-- Pressman & Maxim, *Software Engineering* (9.ª), calidad del diseño.
+- **Principal:** Larman, *UML y patrones* — casos de uso, modelo de dominio y transición hacia responsabilidades de diseño.
+- **Principal:** GoF, *Design Patterns* — reutilización de soluciones de diseño cuando las decisiones lo requieran.
+- **Consulta:** Sommerville, *Software Engineering* (10.ª), procesos de software, requisitos y atributos de calidad.
+- **Consulta:** Pressman & Maxim, *Software Engineering* (9.ª), calidad del diseño y procesos.
