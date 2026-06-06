@@ -6,12 +6,12 @@ remote_theme: just-the-docs/just-the-docs
 url: https://unlam-informatica.github.io
 baseurl: /diseno-de-software
 
-color_scheme: dark
+color_scheme: light
 
 search_enabled: true
 heading_anchors: true
 
-callouts_level: loud
+callouts_level: quiet
 callouts:
   note:
     title: Nota

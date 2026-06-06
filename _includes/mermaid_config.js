@@ -1,5 +1,6 @@
-{
+({
   theme: "base",
+  themeCSS: "svg { background-color: #fffef0; }",
   themeVariables: {
     background: "#fffef0",
     mainBkg: "#f8f5ff",
@@ -33,4 +34,4 @@
   sequence: {
     mirrorActors: false
   }
-}
+})

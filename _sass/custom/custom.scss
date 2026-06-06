@@ -33,7 +33,7 @@
     font-size: 0.875rem;
   }
 
-  // ─── Tablas (UX dark mode) ───────────────────────────────────────────────
+  // ─── Tablas ─────────────────────────────────────────────────────────────
   // Estilo simple y aireado: sin caja exterior ni cebra. Solo un encabezado
   // claro con línea de acento, separadores horizontales finos entre filas y un
   // hover sutil. Menos ruido visual = más fácil de leer.
@@ -103,13 +103,10 @@
   }
 }
 
-// ─── Callouts: paleta accesible para dark mode ───────────────────────────────
+// ─── Callouts: paleta accesible para light mode ─────────────────────────────
 //
-// El tema (callouts_level: loud) pinta título y bordes con el tono -300 de cada
-// color y sin relleno; varios de esos tonos quedan apagados/poco legibles sobre
-// el fondo oscuro. Acá unificamos los cinco callouts con buenas prácticas de UX
-// para admoniciones en dark mode:
-//  • un acento CLARO y de alto contraste por cada tipo,
+// Unificamos los cinco callouts con buenas prácticas de UX para admoniciones:
+//  • un acento de alto contraste por cada tipo,
 //  • hues bien diferenciados (azul / violeta / rojo / ámbar / teal) para que el
 //    tipo de callout se reconozca de un vistazo,
 //  • un fondo translúcido tenue (relleno suave) que separa el bloque del cuerpo
@@ -117,11 +114,11 @@
 // El acento se aplica al borde izquierdo (jerarquía visual) y al título.
 
 $callouts-acentos: (
-  "note":       #79c0ff,  // Nota — azul info, suave y legible
-  "important":  #d2a8ff,  // Importante — violeta (convención GitHub)
-  "warning":    #ff938a,  // Atención — rojo cálido
-  "enunciado":  #ffca28,  // Enunciado — ámbar
-  "resolucion": #4db6ac,  // Resolución — teal
+  "note":       #0969da,  // Nota — azul info
+  "important":  #8250df,  // Importante — violeta
+  "warning":    #cf222e,  // Atención — rojo
+  "enunciado":  #9a6700,  // Enunciado — ámbar
+  "resolucion": #0a7f72,  // Resolución — teal
 );
 
 @each $nombre, $acento in $callouts-acentos {

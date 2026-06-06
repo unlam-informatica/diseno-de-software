@@ -1,21 +1,19 @@
 // setup.scss — se importa antes del tema.
-// Sin overrides de la paleta dark original de just-the-docs.
+// Sin overrides de la paleta light original de just-the-docs.
 
 // Colores extra para los callouts personalizados (`enunciado`, `resolucion`).
 // just-the-docs solo define red/yellow/green/blue/purple/grey; al usar
 // `color: amber`/`color: teal` en _config.yml el tema interpola
 // `$amber-000`/`$amber-300` y `$teal-000`/`$teal-300`, que hay que definir acá.
 //
-// El sitio usa `color_scheme: dark` + `callouts_level: loud`: en ese modo el
-// tema toma el tono `-300` para el título y los bordes, así que ese tono debe
-// ser CLARO para que se lea sobre el fondo oscuro. Los `-000` solo los usa el
-// esquema claro (que no se publica) pero hay que definirlos para que compile.
+// El sitio usa `color_scheme: light` + `callouts_level: quiet`: el tono `-000`
+// aporta el fondo suave del callout y el `-300` se usa para título/borde.
 $amber-000: #fff8e1;
 $amber-100: #ffe082;
 $amber-200: #ffd54f;
-$amber-300: #ffca28; // ámbar claro, legible en dark
+$amber-300: #9a6700; // ámbar oscuro, legible en light
 
 $teal-000: #e0f2f1;
 $teal-100: #80cbc4;
 $teal-200: #4db6ac;
-$teal-300: #4db6ac; // teal claro, legible en dark
+$teal-300: #0a7f72; // teal oscuro, legible en light

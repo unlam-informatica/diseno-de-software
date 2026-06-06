@@ -82,6 +82,15 @@ assets/img/              # Imágenes y diagramas propios del sitio
 reference/               # PDFs fuente de la cátedra (excluidos del build)
 ```
 
+## Cambios de sitio, layout y estilos
+
+Antes de implementar cambios ad hoc sobre **layout, estilos, navegación, componentes, configuración del tema, Mermaid, callouts, tablas, código, búsqueda o cualquier comportamiento propio del sitio**, verificar primero si **Just the Docs** ya ofrece una forma oficial de hacerlo.
+
+- Documentación oficial: <https://just-the-docs.com/>
+- Preferir configuración del tema, includes documentados, variables Sass, componentes y extensiones soportadas por Just the Docs.
+- Usar CSS o JavaScript propio solo cuando la documentación oficial no cubra el caso, cuando el mecanismo documentado no alcance, o cuando el cambio sea específico del sitio y esté justificado.
+- Si se agrega una solución propia, mantenerla acotada, documentar brevemente por qué existe y evitar duplicar una capacidad nativa del tema.
+
 ## Navegación (just-the-docs)
 
 - El **home** usa `nav_order: 1`.
