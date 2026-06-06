@@ -78,6 +78,54 @@
   // }
 }
 
+// ─── Mermaid (diagramas UML / flujo) ────────────────────────────────────────
+//
+// Mermaid renderiza SVGs con estilos pensados para fondo claro. En dark mode,
+// las flechas negras pueden pasar por zonas transparentes del SVG y perderse
+// contra el fondo de la página. Les damos un lienzo claro propio y forzamos
+// contraste suficiente para conectores, textos y marcadores.
+
+.main-content {
+  .mermaid {
+    display: block;
+    margin: 1.25rem 0;
+    padding: 1rem;
+    overflow-x: auto;
+    background: #fffef0;
+    border: 1px solid rgba(121, 192, 255, 0.25);
+    border-radius: 6px;
+  }
+
+  .mermaid svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+    background: #fffef0;
+  }
+
+  .mermaid text,
+  .mermaid .label,
+  .mermaid .nodeLabel,
+  .mermaid .edgeLabel {
+    color: #1f2328 !important;
+    fill: #1f2328 !important;
+  }
+
+  .mermaid .edgePath .path,
+  .mermaid .flowchart-link,
+  .mermaid .messageLine0,
+  .mermaid .messageLine1 {
+    stroke: #24292f !important;
+  }
+
+  .mermaid marker path,
+  .mermaid marker polygon {
+    fill: #24292f !important;
+    stroke: #24292f !important;
+  }
+}
+
 // ─── Callouts: paleta accesible para dark mode ───────────────────────────────
 //
 // El tema (callouts_level: loud) pinta título y bordes con el tono -300 de cada
