@@ -20,5 +20,7 @@ Introducción al diseño de software como actividad del ciclo de desarrollo: su 
 
 ## Bibliografía
 
-- Sommerville, *Software Engineering* (10.ª), cap. de diseño arquitectónico y de objetos.
-- Pressman & Maxim, *Software Engineering* (9.ª), conceptos y principios de diseño.
+- **Principal:** Larman, *UML y patrones* — diseño OO, responsabilidades, cohesión y acoplamiento desde GRASP.
+- **Principal:** GoF, *Design Patterns* — reutilización de soluciones de diseño.
+- **Consulta:** Pressman & Maxim, *Software Engineering* (9.ª), conceptos y principios clásicos de diseño.
+- **Consulta:** Sommerville, *Software Engineering* (10.ª), proceso, diseño arquitectónico y calidad.

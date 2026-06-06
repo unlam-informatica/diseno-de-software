@@ -2,6 +2,7 @@
 title: Teoría
 parent: "Unidad 5 — Diseño de sistemas de tiempo real"
 nav_order: 1
+has_toc: false
 ---
 
 ## Introducción

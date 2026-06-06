@@ -33,11 +33,11 @@ Evaluación: **primer parcial** sobre unidades 1–3; **segundo parcial** (TP de
 
 Al escribir o revisar teoría, alinear con el enfoque de estos textos:
 
-- **Sommerville**, *Software Engineering* (10.ª) — proceso, requisitos, arquitectura, topologías, calidad.
-- **Pressman & Maxim**, *Software Engineering* (9.ª) — conceptos de diseño, calidad, UI.
-- **GoF**, *Design Patterns* — patrones creacionales/estructurales/de comportamiento.
-- **Larman**, *UML y patrones* — GRASP, asignación de responsabilidades, diseño OO.
-- **Yourdon**, *Análisis estructurado moderno* (complementaria).
+- **GoF**, *Design Patterns* — referencia principal para patrones creacionales/estructurales/de comportamiento y reutilización de soluciones de diseño.
+- **Larman**, *UML y patrones* — referencia principal para GRASP, asignación de responsabilidades y diseño OO.
+- **Sommerville**, *Software Engineering* (10.ª) — consulta para proceso, requisitos, arquitectura, topologías y calidad.
+- **Pressman & Maxim**, *Software Engineering* (9.ª) — consulta para conceptos clásicos de diseño, calidad y UI.
+- **Yourdon**, *Análisis estructurado moderno* — complementaria.
 
 ## Estructura del sitio
 

@@ -2,6 +2,7 @@
 title: Teoría
 parent: "Unidad 6 — Interfaz Hombre-Computadora"
 nav_order: 1
+has_toc: false
 ---
 
 ## Introducción

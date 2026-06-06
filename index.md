@@ -8,7 +8,7 @@ nav_order: 1
 
 Apuntes de **teoría** de la asignatura **3648 — Diseño de Software** (Trayecto Desarrollo de Software, Ingeniería en Informática), organizados por unidad según el programa analítico de la cátedra.
 
-El material está pensado para **estudiar para los parciales**: cada unidad resume los conceptos centrales con el tratamiento que les da la bibliografía recomendada (Sommerville, Pressman & Maxim, GoF y Larman).
+El material está pensado para **estudiar para los parciales**: cada unidad resume los conceptos centrales priorizando la bibliografía principal de la cátedra (**GoF** y **Larman**) y usando el resto de la bibliografía para validar o ampliar conceptos generales.
 
 {: .note }
 > **Estado:** el sitio reúne la **teoría** de las seis unidades y una sección de **prácticas** con los casos de la guía, que se irá completando.
@@ -54,15 +54,15 @@ La materia es de **promoción** (RHCS 054/2011). El examen final es escrito y pr
 
 ## Bibliografía
 
-### Obligatoria
+### Principal para la cátedra
 
-- Ian Sommerville — *Software Engineering* · Pearson Education · 10.ª edición · 2016
-- Roger S. Pressman & Bruce R. Maxim — *Software Engineering: A Practitioner's Approach* · McGraw-Hill · 9.ª edición · 2019
 - Erich Gamma, Richard Helm, Ralph Johnson & John Vlissides (GoF) — *Design Patterns: Elements of Reusable Object-Oriented Software* · Addison-Wesley · 1994
 - Craig Larman — *UML y patrones* · Pearson Educación · 2.ª edición · 2003
 
-### Complementaria
+### De consulta y validación
 
+- Ian Sommerville — *Software Engineering* · Pearson Education · 10.ª edición · 2016
+- Roger S. Pressman & Bruce R. Maxim — *Software Engineering: A Practitioner's Approach* · McGraw-Hill · 9.ª edición · 2019
 - Edward Yourdon — *Análisis estructurado moderno* · Prentice-Hall Hispanoamericana · 2.ª edición · 1993
 
 ### Otros recursos

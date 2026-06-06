@@ -2,6 +2,7 @@
 title: Teoría
 parent: "Unidad 2 — Del diseño de sistemas al diseño de software"
 nav_order: 1
+has_toc: false
 ---
 
 ## Introducción

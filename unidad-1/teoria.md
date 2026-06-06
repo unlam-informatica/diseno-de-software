@@ -2,6 +2,7 @@
 title: Teoría
 parent: "Unidad 1 — Diseño de software"
 nav_order: 1
+has_toc: false
 ---
 
 ## Introducción
@@ -13,7 +14,13 @@ El diseño es, según Pressman, la actividad técnica central del proceso de sof
 {: .note }
 > El diseño es el "puente" entre el espacio del problema (requisitos, lo que el cliente necesita) y el espacio de la solución (código, lo que se construye). Es la primera de las tres actividades técnicas que producen el sistema: **diseño → construcción/codificación → prueba**.
 
-Esta unidad presenta los **conceptos fundamentales del diseño** que son independientes del método o paradigma concreto (estructurado, orientado a objetos, etc.): son las ideas que todo buen diseño aplica, formuladas a lo largo de la historia de la ingeniería de software por autores como **Wirth** (refinamiento), **Parnas** (ocultamiento de información), **Constantine y Yourdon** (cohesión y acoplamiento), entre otros, y sistematizadas en la bibliografía de **Sommerville** y **Pressman & Maxim**.
+Esta unidad presenta los **conceptos fundamentales del diseño** que son independientes del método o paradigma concreto (estructurado, orientado a objetos, etc.): son las ideas que todo buen diseño aplica, formuladas a lo largo de la historia de la ingeniería de software por autores como **Wirth** (refinamiento), **Parnas** (ocultamiento de información), **Constantine y Yourdon** (cohesión y acoplamiento), entre otros.
+
+En la cátedra, estos conceptos se estudian principalmente desde el diseño orientado a objetos:
+
+- **Larman**, *UML y patrones*, aporta el enfoque de **asignación de responsabilidades**: diseñar implica decidir qué objetos colaboran, qué sabe cada uno y qué hace cada uno.
+- **GoF**, *Design Patterns*, aporta la idea de **reutilizar soluciones de diseño** ya probadas para problemas recurrentes, no solo reutilizar código.
+- **Sommerville** y **Pressman & Maxim** se usan como apoyo para validar definiciones generales de proceso, calidad, modularidad y principios clásicos.
 
 ---
 
@@ -47,6 +54,22 @@ Pressman describe el diseño como una transformación del **modelo de requisitos
 | Modelo de comportamiento, flujo, clases | **Diseño de componentes** (lógica interna de cada módulo) |
 
 El modelo de diseño se construye en **distintos niveles de abstracción**: comienza con representaciones de alto nivel (cercanas al problema) y se refina progresivamente hacia representaciones de bajo nivel (cercanas al código).
+
+### El diseño como asignación de responsabilidades (Larman)
+
+En diseño orientado a objetos, la transición desde requisitos hacia código no consiste solamente en "dibujar clases". Según Larman, una parte central del diseño es **asignar responsabilidades** a objetos y clases.
+
+Una **responsabilidad** es una obligación de un objeto. Puede ser de dos tipos:
+
+| Tipo | Significa que el objeto debe... | Ejemplo |
+| --- | --- | --- |
+| **Conocer** (*knowing*) | Saber información propia o relacionada | Una `Venta` conoce sus `LineasDeVenta` y su total. |
+| **Hacer** (*doing*) | Realizar una acción o coordinar una colaboración | Una `Venta` calcula su total; un `ControladorVenta` coordina el caso de uso. |
+
+{: .note }
+> Para Larman, un buen diseño OO no se mide por tener muchas clases, sino por asignar bien las responsabilidades. Los patrones **GRASP** ayudan a decidir *quién debe hacer qué* para obtener bajo acoplamiento, alta cohesión y objetos comprensibles.
+
+Esta mirada conecta directamente con los conceptos de la unidad: si una clase recibe demasiadas responsabilidades pierde cohesión; si necesita conocer demasiados detalles de otras clases aumenta el acoplamiento; si oculta bien sus datos y ofrece una interfaz clara mejora la modularidad.
 
 ### Diseño preliminar (arquitectónico) vs. diseño detallado
 
@@ -96,11 +119,23 @@ Pressman distingue tres clases de abstracción usadas en diseño:
 
 Es una representación con nombre de un conjunto de datos que describe un objeto del problema, ocultando su estructura interna. Por ejemplo, `Factura` agrupa cliente, ítems, total, impuestos y fecha; quien la usa la manipula como un todo sin conocer cómo se almacenan esos campos.
 
+En orientación a objetos, la abstracción de datos no debería quedarse en "una bolsa de atributos". Una clase útil combina **información y comportamiento**: no solo guarda datos, también ofrece operaciones coherentes con su responsabilidad.
+
 ```text
 Factura := {cliente, items[], total, impuestos, fecha}
 ```
 
 Es la base de los **tipos abstractos de datos (TAD)** y de la noción de **clase** en orientación a objetos.
+
+**Ejemplo orientado a objetos:**
+
+```text
+Clase Venta
+    conoce: lineasDeVenta, fecha
+    hace: calcularTotal()
+```
+
+La interfaz pública permite pedirle a la venta su total; el resto del sistema no necesita saber cómo recorre las líneas ni cómo aplica reglas de cálculo.
 
 ### Abstracción procedimental
 
@@ -183,11 +218,26 @@ No alcanza con dividir: la división debe ser **efectiva**. La modularidad es ef
 
 Pressman lista criterios para evaluar un método de diseño según cómo favorece la modularidad: descomponibilidad, componibilidad, comprensibilidad, continuidad y protección modular.
 
+### Modularidad en diseño orientado a objetos
+
+En un diseño OO, los módulos aparecen en distintos tamaños:
+
+| Nivel | Qué agrupa | Pregunta de diseño |
+| --- | --- | --- |
+| **Método** | Una operación pequeña | "¿Esta operación hace una sola cosa?" |
+| **Clase** | Datos y comportamiento relacionados | "¿Esta clase tiene una responsabilidad clara?" |
+| **Paquete / capa** | Conjunto de clases relacionadas | "¿Estas clases cambian por razones parecidas?" |
+| **Subsistema** | Parte significativa de la solución | "¿Puede entenderse y evolucionar como unidad?" |
+
+Larman insiste en que la modularidad se consigue asignando responsabilidades de manera razonable. Una clase con demasiadas tareas se vuelve difícil de entender; una solución con demasiadas clases pequeñas puede generar más acoplamiento e integración innecesaria.
+
 ---
 
 ## Cohesión
 
 La **cohesión** (*cohesion*) mide **cuán relacionadas están entre sí las responsabilidades dentro de un mismo módulo**. Un módulo cohesivo hace **una sola cosa y la hace bien**: todos sus elementos contribuyen a una única tarea bien definida.
+
+En términos de Larman, una clase con alta cohesión tiene una cantidad manejable de responsabilidades fuertemente relacionadas. Si una clase concentra tareas de interfaz, reglas de negocio, persistencia y comunicación externa, probablemente tiene baja cohesión aunque "funcione".
 
 **Objetivo de diseño: buscar la mayor cohesión posible (cohesión alta).** Cuanto más cohesivo es un módulo, más fácil es entenderlo, probarlo, reutilizarlo y modificarlo.
 
@@ -226,6 +276,18 @@ modulo CalculadoraDeImpuestos:
     calcularTotalConImpuestos(monto)   # todo gira en torno a impuestos
 ```
 
+**Ejemplo OO más cercano a Larman:**
+
+```text
+Clase Venta:
+    agregarLinea(producto, cantidad)
+    calcularTotal()
+    finalizar()
+
+# Las operaciones están relacionadas con la responsabilidad de representar
+# y completar una venta.
+```
+
 ---
 
 ## Acoplamiento
@@ -233,6 +295,8 @@ modulo CalculadoraDeImpuestos:
 El **acoplamiento** (*coupling*) mide **el grado de interdependencia entre módulos distintos**: cuánto "sabe" un módulo de otro y cuánto depende de él. Es complementario de la cohesión: la cohesión es interna a un módulo, el acoplamiento es entre módulos.
 
 **Objetivo de diseño: buscar el menor acoplamiento posible (acoplamiento bajo o débil).** Cuanto menos dependa un módulo de los detalles de otro, más fácil es cambiarlo, probarlo y reutilizarlo sin afectar al resto (efecto dominó).
+
+En diseño OO, bajo acoplamiento significa que una clase conoce lo mínimo necesario de otras clases. No debe depender de atributos internos, tipos concretos evitables, estructuras globales ni detalles de implementación. Esta es una de las ideas centrales de GRASP: asignar responsabilidades de modo que los cambios no se propaguen sin necesidad.
 
 ### Escala de acoplamiento (de peor a mejor)
 
@@ -288,6 +352,18 @@ Pressman destaca tres beneficios principales de la independencia funcional:
 {: .note }
 > La independencia funcional es la **medida cualitativa de la calidad del diseño modular**. Sus dos criterios de evaluación son la **cohesión** (que debe ser alta) y el **acoplamiento** (que debe ser bajo). Es uno de los conceptos más importantes de la unidad.
 
+### Lectura desde GRASP
+
+Aunque los patrones GRASP se estudian con más detalle en la unidad 3, conviene anticipar la conexión:
+
+- **Alta Cohesión** y **Bajo Acoplamiento** son patrones GRASP explícitos en Larman.
+- **Experto en Información** suele mejorar la cohesión porque asigna una responsabilidad al objeto que ya tiene los datos necesarios.
+- **Controlador** ayuda a separar la coordinación de un caso de uso de la interfaz de usuario.
+- **Fabricación Pura** puede introducir una clase artificial para evitar que una clase del dominio quede sobrecargada o demasiado acoplada.
+
+{: .note }
+> Unidad 1 presenta el criterio de calidad; unidad 3 muestra patrones concretos para aplicarlo. No son temas separados: GRASP operacionaliza cohesión, acoplamiento e independencia funcional en diseño OO.
+
 ---
 
 ## Ocultamiento de información y separación de intereses
@@ -319,7 +395,18 @@ Este principio justifica la modularidad y se relaciona directamente con el ocult
 
 ## Rediseño y refactoring
 
-### Rediseño (refactoring)
+### Qué significa rediseñar
+
+El **rediseño** es la revisión de una solución de diseño existente para mejorar su estructura, corregir decisiones pobres o adaptarla a nuevos requisitos de calidad. Puede ocurrir antes de codificar, durante la construcción o cuando el sistema ya está en mantenimiento.
+
+Hay dos situaciones frecuentes:
+
+| Situación | Cambia el comportamiento externo | Ejemplo |
+| --- | --- | --- |
+| **Refactoring** | No | Dividir una clase grande sin cambiar lo que el sistema hace. |
+| **Rediseño funcional o arquitectónico** | Puede cambiarlo o ampliarlo | Reorganizar módulos para soportar pagos con varios proveedores. |
+
+### Refactoring
 
 La **refactorización** o **refactoring** es el proceso de **cambiar la estructura interna del software para mejorar su calidad (legibilidad, mantenibilidad, simplicidad) sin alterar su comportamiento externo observable**. El término fue popularizado por Martin Fowler y es citado por Pressman como una actividad clave del diseño evolutivo.
 
@@ -327,6 +414,8 @@ La **refactorización** o **refactoring** es el proceso de **cambiar la estructu
 > Definición operativa: *"refactorizar es modificar el diseño/código de forma que no cambie su comportamiento externo, pero sí mejore su estructura interna"*. Si cambia lo que el software hace, no es refactoring: es agregar funcionalidad o corregir un bug.
 
 Cuando se examina un componente, se buscan **redundancias, elementos no usados, algoritmos ineficientes, estructuras mal construidas o inapropiadas**, y se los corrige para obtener un diseño mejor. Ejemplos de refactorizaciones: extraer un método, renombrar variables, eliminar código duplicado, dividir una clase con baja cohesión, reemplazar números mágicos por constantes.
+
+En términos de Larman, muchas refactorizaciones corrigen malas asignaciones de responsabilidades: una clase que sabe demasiado, un objeto que hace trabajo que debería hacer otro, o una colaboración que genera acoplamiento innecesario.
 
 ### Relación con la deuda técnica
 
@@ -346,7 +435,7 @@ La **reutilización del software** (*software reuse*) consiste en **construir nu
 | --- | --- | --- |
 | **Código** | Funciones, fragmentos, bibliotecas | Una biblioteca de funciones matemáticas, una rutina de validación |
 | **Componentes / objetos** | Módulos o clases independientes con interfaz definida | Un componente de envío de emails, una clase `Logger` |
-| **Patrones de diseño** (*design patterns*) | Soluciones probadas a problemas recurrentes de diseño | Singleton, Observer, Factory (GoF) |
+| **Patrones de diseño** (*design patterns*) | Soluciones probadas a problemas recurrentes de diseño | Singleton, Observer, Factory Method, Adapter, Strategy (GoF) |
 | **Frameworks** | Esqueletos de aplicación que se completan/extienden | Spring, Angular, .NET; aportan estructura y se "rellena" la lógica propia |
 | **Sistemas / aplicaciones** | Sistemas completos configurables o líneas de producto | ERP configurable, software de línea de producto (*product line*) |
 
@@ -367,6 +456,21 @@ La **reutilización del software** (*software reuse*) consiste en **construir nu
 
 {: .note }
 > La reutilización no es gratis: ahorra a largo plazo pero requiere inversión inicial (diseñar para reutilizar) y disciplina (catalogar, documentar, gestionar dependencias). Los **patrones de diseño** son la forma de reutilización de **conocimiento de diseño**, no de código.
+
+### Reutilización de diseño: GoF
+
+GoF define un patrón de diseño como una solución general y reutilizable para un problema recurrente en un contexto determinado. El patrón no es una clase lista para copiar, sino una guía sobre cómo organizar clases y objetos para resolver una fuerza de diseño.
+
+Los patrones GoF se agrupan en tres familias:
+
+| Familia | Qué problema atacan | Ejemplos |
+| --- | --- | --- |
+| **Creacionales** | Cómo crear objetos sin acoplarse innecesariamente a clases concretas | Factory Method, Abstract Factory, Builder, Prototype, Singleton |
+| **Estructurales** | Cómo componer clases u objetos para formar estructuras flexibles | Adapter, Composite, Decorator, Facade, Proxy |
+| **De comportamiento** | Cómo distribuir responsabilidades y colaboraciones entre objetos | Observer, Strategy, Command, State, Template Method |
+
+{: .note }
+> Para la unidad 1 alcanza con entender que los patrones son reutilización de experiencia de diseño. El estudio detallado de GoF corresponde a la unidad 3, pero su motivación nace acá: reducir acoplamiento, aumentar cohesión y diseñar para el cambio.
 
 ---
 
@@ -408,11 +512,26 @@ Para evaluar la calidad de la representación de diseño, Hewlett-Packard defini
 {: .note }
 > Un buen diseño no se mide por lo "elegante" que parezca, sino por su capacidad de cumplir los requisitos y de **sostener el cambio** en el tiempo: modularidad, independencia funcional, bajo acoplamiento, alta cohesión y ocultamiento de información son los medios para lograrlo.
 
+### Criterio práctico de evaluación
+
+Ante una propuesta de diseño, conviene hacer estas preguntas:
+
+| Pregunta | Concepto que evalúa |
+| --- | --- |
+| ¿El diseño cubre todos los requisitos funcionales y no funcionales relevantes? | Relación requisitos-diseño, calidad |
+| ¿Cada módulo o clase tiene una responsabilidad clara? | Cohesión, Larman |
+| ¿Un cambio interno queda oculto detrás de una interfaz estable? | Ocultamiento de información |
+| ¿Las clases dependen de detalles internos de otras clases? | Acoplamiento |
+| ¿La cantidad de módulos ayuda a entender o agrega coordinación innecesaria? | Modularidad |
+| ¿Hay una solución conocida aplicable al problema? | Reutilización, GoF |
+| ¿El diseño puede probarse y modificarse por partes? | Independencia funcional |
+
 ---
 
 ## En síntesis (para el parcial)
 
 - **Diseño:** traduce el **modelo de requisitos** (qué) en el **modelo de diseño** (cómo). Entrada = requisitos; salida = modelo de diseño (datos, arquitectura, interfaces, componentes).
+- **En diseño OO (Larman):** diseñar es **asignar responsabilidades** a objetos: qué conocen, qué hacen y cómo colaboran.
 - **Diseño preliminar/arquitectónico** = estructura global (qué módulos); **diseño detallado** = interior de cada módulo (cómo es por dentro).
 - **Diseño de sistemas vs. software:** el de sistemas abarca HW + SW + personas y decide *qué* resuelve el software; el de software diseña *cómo* se estructura internamente esa porción de software. El de software empieza donde termina el de sistemas.
 - **Abstracción:** ocultar detalles para manejar complejidad. Tipos: **de datos, procedimental, de control**. Sube el nivel.
@@ -423,6 +542,21 @@ Para evaluar la calidad de la representación de diseño, Hewlett-Packard defini
 - **Independencia funcional = alta cohesión + bajo acoplamiento.** Mejora mantenibilidad, prueba, reutilización y limita la propagación de errores.
 - **Ocultamiento de información (Parnas):** ocultar decisiones de diseño tras interfaces estables. Base del encapsulamiento. Reduce acoplamiento y facilita el cambio.
 - **Separación de intereses:** dividir el problema en partes resolubles por separado (justifica la modularidad y las capas).
-- **Rediseño/refactoring:** mejorar la estructura interna sin cambiar el comportamiento externo. Es el mecanismo para **pagar la deuda técnica**.
-- **Reutilización:** niveles → código, componentes, **patrones**, frameworks, sistemas. Beneficios: menor costo/tiempo, mayor confiabilidad. Riesgos: costo de adaptación, dependencia, "no inventado aquí".
+- **Rediseño:** revisar una solución para mejorarla o adaptarla. **Refactoring:** rediseño interno sin cambiar comportamiento externo; sirve para **pagar deuda técnica**.
+- **Reutilización:** niveles → código, componentes, **patrones**, frameworks, sistemas. En GoF, los patrones reutilizan **conocimiento de diseño**: creacionales, estructurales y de comportamiento.
 - **Buen diseño (Pressman):** implementa los requisitos, es legible/guía, da imagen completa; modular, con independencia funcional, interfaces simples; calidad medible con **FURPS**.
+
+### Cobertura del programa de la unidad 1
+
+| Tema indicado en el programa.pdf | Dónde aparece en estos apuntes |
+| --- | --- |
+| Diseño de software | Introducción; el diseño dentro del proceso |
+| Diferencias entre diseño de sistemas y diseño de software | Sección específica comparativa |
+| Abstracción | Sección "Abstracción" |
+| Refinamiento | Sección "Refinamiento paso a paso" |
+| Modularidad | Sección "Modularidad" |
+| Cohesión | Sección "Cohesión" |
+| Acoplamiento | Sección "Acoplamiento" |
+| Rediseño | Sección "Rediseño y refactoring" |
+| Independencia funcional | Sección "Independencia funcional" |
+| Reutilización | Sección "Reutilización" |

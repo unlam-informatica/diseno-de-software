@@ -2,6 +2,7 @@
 title: Teoría
 parent: "Unidad 4 — Diseño, refinamiento y especificación"
 nav_order: 1
+has_toc: false
 ---
 
 ## Introducción

@@ -2,6 +2,7 @@
 title: Teoría
 parent: "Unidad 3 — Los patrones y el diseño"
 nav_order: 1
+has_toc: false
 ---
 
 {: .note }
