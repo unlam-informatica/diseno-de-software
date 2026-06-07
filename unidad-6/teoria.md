@@ -176,6 +176,21 @@ La **accesibilidad** es el diseño de productos usables por **personas con disca
 {: .important }
 > La accesibilidad beneficia a todos (diseño universal): los subtítulos sirven en ambientes ruidosos, el buen contraste ayuda bajo el sol, la navegación por teclado acelera a usuarios expertos.
 
+### Principios básicos de interfaz Web
+
+Las referencias de clase incorporan principios clásicos para WebApps, alineados con Pressman y Tognozzi. Los más relevantes para diseño son:
+
+| Principio | Aplicación práctica |
+|---|---|
+| **Previsión** | Anticipar qué necesita el usuario en cada paso. |
+| **Comunicación** | Informar estado, errores, progreso y consecuencias. |
+| **Consistencia** | Mantener patrones de navegación, componentes y lenguaje. |
+| **Autonomía controlada** | Dar control sin dejar que el usuario rompa el flujo o los datos. |
+| **Eficiencia y flexibilidad** | Permitir caminos rápidos para usuarios frecuentes sin confundir a novatos. |
+| **Ley de Fitts** | Hacer que acciones importantes sean fáciles de alcanzar y seleccionar. |
+| **Reducción de latencia** | Optimizar tiempos o mostrar feedback mientras el sistema responde. |
+| **Navegación visible** | Que el usuario sepa dónde está, qué puede hacer y cómo volver. |
+
 ## Diseño de contenidos (content design)
 
 El **diseño de contenidos** organiza la información para que sea fácil de leer, encontrar y comprender. Claves:
@@ -186,6 +201,19 @@ El **diseño de contenidos** organiza la información para que sea fácil de lee
 - **Escaneabilidad:** los usuarios "escanean" más que leen; usar títulos, listas, negritas y bloques cortos.
 - **Espacio en blanco:** separa, agrupa y da respiro; reduce la sobrecarga.
 - **Consistencia de estilo y tono.**
+
+### Diseño estético y composición visual
+
+En WebApps, Pressman separa el diseño de la interfaz del **diseño estético**: la interfaz define estructura e interacción; la estética define la percepción visual y la claridad de la pantalla.
+
+Pautas prácticas:
+
+- No sobrecargar la página: el espacio en blanco ayuda a agrupar y priorizar.
+- Hacer énfasis en el contenido principal, no en adornos.
+- Mantener consistencia de color, tipografía, tamaños y espaciados.
+- Agrupar navegación, contenido y funciones de forma geográfica y predecible.
+- Evitar que el usuario tenga que desplazarse o buscar de más para acciones frecuentes.
+- Usar contraste y jerarquía visual para guiar la mirada.
 
 ## Diseño de componentes de la interfaz
 
@@ -241,6 +269,30 @@ El diseño de la interfaz es un **proceso iterativo** (espiral): se diseña, se 
 
 {: .note }
 > **Modelo mental:** el usuario construye una idea de cómo funciona el sistema. El diseñador debe analizar y respetar ese modelo para que la interfaz resulte predecible e intuitiva.
+
+### Técnicas de investigación y evaluación
+
+El diseño centrado en el usuario necesita evidencia, no solo opinión. Tres herramientas vistas en las referencias:
+
+| Técnica | Para qué sirve | Resultado esperado |
+|---|---|---|
+| **User persona** | Representar un perfil de usuario basado en investigación. | Objetivos, contexto, frustraciones, necesidades y comportamiento. |
+| **Prueba de usabilidad** | Observar usuarios realizando tareas reales o representativas. | Problemas detectados, tasa de éxito, tiempo, errores y comentarios. |
+| **Heat map** | Visualizar clics, atención o desplazamiento en una interfaz. | Zonas calientes/frías, elementos confundidos como clicables, oportunidades de mejora. |
+
+Una **persona** no es un estereotipo inventado sin datos. Debe sintetizar patrones observados en entrevistas, roleplay, encuestas, analítica o pruebas. Sirve para tomar decisiones: priorizar historias de usuario, definir lenguaje, elegir flujos y validar prototipos.
+
+```mermaid
+flowchart LR
+    I["Investigacion<br/>entrevistas, observacion, datos"] --> P["Personas"]
+    P --> HU["Historias de usuario"]
+    HU --> PR["Prototipo"]
+    PR --> PU["Prueba de usabilidad"]
+    PU --> M["Mejoras de diseno"]
+    M --> PR
+```
+
+En una prueba de usabilidad conviene definir: tarea, usuario objetivo, criterio de éxito, métricas, observaciones y cambios derivados. El objetivo no es "defender" el diseño, sino descubrir dónde falla.
 
 ## Diseño Centrado en el Usuario (DCU / UCD)
 
@@ -379,6 +431,7 @@ Cada transición del embudo debe diseñarse para reducir incertidumbre: precio c
 - **Proceso iterativo:** analizar usuarios/tareas → diseñar → prototipar → evaluar → refinar.
 - **DCU (ISO 9241-210):** usuario en el centro y participando durante todo el desarrollo.
 - **Diseño de interacción:** affordances, feedback, mapeo, restricciones, patrones.
+- **Diseño visual:** jerarquía, contraste, espacio en blanco, agrupación geográfica y consistencia estética.
 - **Interfaces entre procesos:** contratos/APIs bien definidos, seguridad (CIA, autenticación, cifrado) y control de tráfico (rate limiting, colas, backpressure).
 - **E-commerce:** catálogo, carrito, checkout sin fricción, confianza, conversión y seguridad (PCI-DSS, HTTPS) son lo determinante.
 
@@ -390,11 +443,14 @@ Cada transición del embudo debe diseñarse para reducir incertidumbre: precio c
 | UX vs UI | Sección "UX vs UI" y mapa conceptual |
 | Interfaces del usuario | Modelo de comunicación; diseño de componentes |
 | Principios de las interfaces | Reglas de oro de Pressman; heurísticas de Nielsen |
+| Principios básicos de interfaz Web | Sección "Principios básicos de interfaz Web" |
 | Simplicidad de acceso | Sección "Simplicidad de acceso y accesibilidad" |
 | Diseño de contenidos | Arquitectura de información, jerarquía, legibilidad |
+| Diseño estético y composición visual | Sección "Diseño estético y composición visual" |
 | Diseño de interfaces del usuario | Componentes, proceso de diseño, interacción |
 | Simplicidad, características, menús, íconos, tablas | Sección de componentes y tabla de riesgos |
 | Proceso de diseño de interfaces | Proceso iterativo; prototipado y evaluación |
+| User personas, pruebas de usabilidad y heat maps | Sección "Técnicas de investigación y evaluación" |
 | Interfaces entre procesos, seguridad y control de tráfico | Sección específica de APIs, seguridad y tráfico |
 | Sistemas de comercio electrónico | E-commerce, checkout, confianza y seguridad |
 | Diseño centrado en el usuario | DCU / ISO 9241-210 |

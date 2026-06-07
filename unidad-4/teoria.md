@@ -94,6 +94,65 @@ Ejemplo mínimo de trazabilidad:
 
 Esta tabla muestra por qué los RNF suelen empujar decisiones de arquitectura, mientras que los RF suelen refinarse hacia operaciones y colaboraciones.
 
+### Validación, verificación y pruebas asociadas al diseño
+
+Los apuntes de testing definen la **prueba** como el conjunto de actividades para **verificar y validar** la calidad del software. En esta unidad se ubica como complemento de la especificación y el diseño: un requisito verificable debe poder convertirse en prueba, y una decisión de diseño debe poder evaluarse.
+
+| Concepto | Pregunta |
+|---|---|
+| **Verificación** | ¿Construimos correctamente el producto según la especificación y el diseño? |
+| **Validación** | ¿Construimos el producto correcto para las necesidades del usuario/stakeholder? |
+
+Tipos de pruebas relevantes:
+
+| Tipo | Qué verifica |
+|---|---|
+| **Unitarias** | Pequeñas unidades funcionales, clases o funciones. |
+| **Integración** | Colaboración entre módulos/componentes. |
+| **Regresión** | Que cambios recientes no rompan comportamiento ya validado. |
+| **Smoke test** | Que las funciones críticas mínimas siguen funcionando. |
+| **Validación funcional** | Que el sistema cumple los requisitos funcionales. |
+| **Alfa / beta / aceptación** | Evaluación en entorno controlado, preliminar o con stakeholders. |
+| **Sistema** | Comportamiento del sistema completo, incluyendo hardware, información y personas cuando aplica. |
+| **Recuperación, performance, seguridad y despliegue** | Atributos de calidad y condiciones operativas. |
+
+En pruebas unitarias e integración se usan dobles de prueba:
+
+| Doble | Uso |
+|---|---|
+| **Stub** | Reemplazo simple que devuelve respuestas fijas cuando un colaborador real aún no existe o no conviene usarlo. |
+| **Mock** | Simula un colaborador y además verifica que el sistema bajo prueba haya interactuado como se esperaba. |
+| **Driver** | Controlador auxiliar que invoca una unidad a probar cuando su llamador real no está disponible. |
+| **Mockup** | Prototipo visual de interfaz; sirve para validar UX/UI, no para probar lógica funcional. |
+
+### UML como puente entre requisitos, diseño e implementación
+
+UML es un **lenguaje de modelado**, no un proceso. Sirve para representar distintas vistas del sistema según lo que se necesite comunicar. Las referencias de clase insisten en que no hace falta usar todo UML: se eligen los diagramas que aportan claridad.
+
+| Diagrama UML | Vista que ayuda a entender | Uso típico |
+|---|---|---|
+| **Casos de uso** | Funcionalidad desde el punto de vista de actores externos. | Captura y validación de requisitos. |
+| **Actividad** | Flujo de trabajo, decisiones, paralelismo, responsabilidades por rol. | Procesos de negocio, casos de uso o algoritmos. |
+| **Clase** | Estructura estática: clases, atributos, operaciones y relaciones. | Modelo de dominio y modelo de diseño. |
+| **Secuencia** | Mensajes ordenados en el tiempo. | Realización de casos de uso y asignación de responsabilidades. |
+| **Comunicación / colaboración** | Objetos conectados y mensajes numerados. | Evaluar enlaces, colaboración y acoplamiento. |
+| **Estados** | Ciclo de vida de un objeto o entidad. | Objetos con estados relevantes y reglas de transición. |
+| **Componentes** | Piezas de software e interfaces. | Diseño de subsistemas y dependencias. |
+| **Despliegue** | Nodos físicos/virtuales y artefactos desplegados. | Topología e infraestructura. |
+
+```mermaid
+flowchart LR
+    CU["Casos de uso"] --> AD["Analisis y diseno"]
+    ACT["Actividad"] --> AD
+    CL["Clases"] --> AD
+    AD --> SEQ["Secuencia / comunicacion"]
+    AD --> COMP["Componentes"]
+    COMP --> DEP["Despliegue"]
+    SEQ --> TEST["Pruebas por escenario"]
+```
+
+La trazabilidad aparece cuando un caso de uso se especifica, se realiza con interacciones, se diseña con clases/componentes, se implementa y finalmente se verifica con pruebas.
+
 ## Refinamiento del diseño
 
 El **refinamiento** es un proceso de **descomposición sucesiva**: se parte de una descripción de alto nivel y se la elabora en niveles cada vez más detallados, decidiendo en cada paso *cómo* se realiza lo que el nivel anterior dejó *abstracto*. Es complementario de la **abstracción**: mientras la abstracción oculta detalle, el refinamiento lo revela.
@@ -136,6 +195,83 @@ Conviene distinguir tres planos relacionados:
 - **Topología:** disposición física/de despliegue de esos componentes.
 - **Tecnología:** las herramientas concretas que lo implementan.
 
+### UML para componentes y despliegue
+
+Las referencias de clase distinguen dos diagramas UML útiles cuando el diseño pasa de la estructura lógica a la implementación física:
+
+| Diagrama | Qué muestra | Cuándo usarlo |
+|---|---|---|
+| **Diagrama de componentes** | Piezas de software, interfaces provistas/requeridas y dependencias. | Para entender subsistemas, módulos principales y relaciones de uso. |
+| **Diagrama de despliegue** | Nodos físicos o virtuales, artefactos y dónde corre cada componente. | Para sistemas distribuidos, Web, cloud, móviles, IoT o cliente-servidor. |
+
+Un **componente** puede representar una porción importante del sistema: un módulo, servicio, biblioteca, ejecutable, paquete o subsistema. Tiene mayor nivel de abstracción que una clase: normalmente se implementa con varias clases.
+
+```mermaid
+flowchart LR
+    UI["Componente UI"] --> API["Componente API"]
+    API --> DOM["Dominio"]
+    API --> AUTH["Autenticacion"]
+    DOM --> DB["Acceso a datos"]
+```
+
+Un **diagrama de despliegue** agrega la pregunta física: qué artefacto corre en qué nodo.
+
+```mermaid
+flowchart LR
+    subgraph Cliente["Nodo: navegador / movil"]
+        SPA["App UI"]
+    end
+    subgraph Servidor["Nodo: servidor aplicacion"]
+        API["API backend"]
+        DOM["Dominio"]
+    end
+    subgraph Datos["Nodo: servidor BD"]
+        DB[("Base de datos")]
+    end
+
+    SPA --> API
+    API --> DOM
+    DOM --> DB
+```
+
+{: .note }
+> En términos de RUP/UML, el modelo de implementación describe componentes y módulos de software; el modelo de despliegue describe la arquitectura hardware o de infraestructura donde esos componentes se ejecutan.
+
+### Diseño en el nivel de componentes
+
+Un **componente** es una parte modular, reemplazable y desplegable del sistema. Puede verse de dos formas complementarias:
+
+- Como **conjunto de clases que colaboran** para cumplir una responsabilidad del dominio o de infraestructura.
+- Como **unidad funcional** con una interfaz clara que permite invocar servicios y pasar datos.
+
+Tipos habituales:
+
+| Tipo de componente | Responsabilidad |
+|---|---|
+| **Control** | Coordina la invocación de otros componentes y el flujo de una operación. |
+| **Dominio** | Implementa una función o regla propia del problema. |
+| **Infraestructura** | Provee servicios técnicos: persistencia, mensajería, logging, seguridad, integración. |
+
+Los apuntes de componentes remarcan cuatro principios de diseño basados en clase:
+
+| Principio | Idea de diseño |
+|---|---|
+| **Abierto/Cerrado** | Extender comportamiento sin modificar código estable. |
+| **Sustitución de Liskov** | Una subclase debe poder usarse donde se espera su superclase. |
+| **Inversión de dependencias** | Depender de abstracciones, no de clases concretas. |
+| **Segregación de interfaces** | Preferir interfaces específicas para cada cliente antes que una interfaz grande y general. |
+
+También hay principios de organización en paquetes:
+
+| Principio | Criterio |
+|---|---|
+| **Equivalencia reutilización/lanzamiento** | Lo que se reutiliza junto debería versionarse y liberarse junto. |
+| **Cierre común** | Las clases que cambian juntas pertenecen al mismo paquete. |
+| **Reutilización común** | Las clases que no se reutilizan juntas no deberían agruparse juntas. |
+
+{: .note }
+> En diagramas de componentes, conviene representar dependencias mediante **interfaces** antes que con dependencias directas componente-a-componente. Esto preserva bajo acoplamiento y facilita reemplazar implementaciones.
+
 A continuación, las topologías según el tipo de sistema.
 
 ## Diseño de sistemas de Escritorio (desktop)
@@ -165,6 +301,29 @@ Las aplicaciones de escritorio se **instalan y ejecutan localmente** en la máqu
 ## Diseño de sistemas Web
 
 Las aplicaciones Web se ejecutan sobre la arquitectura **cliente-servidor**: el **cliente** (navegador) solicita recursos y un **servidor** los provee, comunicándose por **HTTP/HTTPS**. Pressman las trata específicamente como **WebApps**, con énfasis en arquitecturas de contenido, interacción y funcionalidad.
+
+### Pirámide de diseño de WebApps
+
+Los apuntes de WebApps organizan el diseño en varios elementos que se apoyan entre sí:
+
+| Elemento | Qué decide |
+|---|---|
+| **Interfaz** | Estructura de pantallas, controles, flujo de interacción y mecanismos de navegación. |
+| **Estética** | Aspecto visual: color, tipografía, composición, espaciado y consistencia gráfica. |
+| **Contenido** | Objetos de contenido, estructura, relaciones y forma de presentación. |
+| **Navegación** | Cómo se desplaza el usuario entre contenido y funciones; semántica de vínculos y nodos. |
+| **Arquitectura** | Estructura general de hipermedios y aplicación; separación entre presentación, lógica y datos. |
+| **Componentes** | Lógica de procesamiento detallada que implementa funciones completas de la WebApp. |
+
+```mermaid
+flowchart TB
+    A["Calidad de WebApp<br/>usabilidad, funcionalidad, confiabilidad, eficiencia, mantenibilidad"] --> B["Interfaz y estetica"]
+    B --> C["Contenido y navegacion"]
+    C --> D["Arquitectura"]
+    D --> E["Componentes"]
+```
+
+La calidad de una WebApp se introduce durante el diseño: una arquitectura correcta no compensa una navegación confusa, y una estética atractiva no compensa una lógica lenta o insegura.
 
 ### Modelo de n capas
 
@@ -254,6 +413,26 @@ flowchart LR
 ## Patrones y estilos arquitectónicos (Sommerville / Pressman)
 
 Un **estilo (o patrón) arquitectónico** es una organización estructural recurrente, con sus ventajas, desventajas y contextos de aplicación. Sommerville describe varios estilos fundamentales:
+
+Antes de elegir un estilo, conviene distinguir **arquitectura** de **diseño concreto**. La arquitectura define la estructura o estructuras principales del sistema: componentes, propiedades visibles e interrelaciones. Un diseño concreto instancia esa arquitectura en una solución particular.
+
+Según los apuntes basados en Pressman/Shaw-Garlan, una descripción arquitectónica debe considerar:
+
+| Aspecto | Qué define |
+|---|---|
+| **Propiedades estructurales** | Componentes del sistema y forma en que se agrupan e interactúan. |
+| **Propiedades extrafuncionales** | Cómo la arquitectura satisface rendimiento, seguridad, disponibilidad, mantenibilidad, etc. |
+| **Familias o patrones reutilizables** | Bloques arquitectónicos recurrentes que sirven para sistemas similares. |
+
+También pueden verse distintos modelos de arquitectura:
+
+| Modelo | Enfoque |
+|---|---|
+| **Estructural** | Componentes organizados y sus relaciones. |
+| **De marco** | Patrones o marcos arquitectónicos repetibles. |
+| **Dinámico** | Cambios de configuración o comportamiento en ejecución. |
+| **De proceso** | Organización del proceso técnico usado para construir el sistema. |
+| **Funcional** | Funciones principales y transformación de datos. |
 
 ### En capas (layered)
 
@@ -380,6 +559,7 @@ Tendencias actuales que extienden o reemplazan las topologías clásicas, fuerte
 
 - La **especificación de requisitos** (RF + RNF) define *qué* hace el sistema; el **diseño** define *cómo*. La **trazabilidad** (matriz de trazabilidad) los vincula y asegura cobertura completa. Los **RNF** son los principales motores de las decisiones arquitectónicas.
 - El **SRS** debe ser completo, consistente, no ambiguo y verificable.
+- Las **pruebas** verifican y validan requisitos y decisiones de diseño: unitarias, integración, regresión, smoke, aceptación, sistema, performance, seguridad, recuperación y despliegue.
 - El **refinamiento** descompone el diseño sucesivamente: del **diseño arquitectónico** (alto nivel) al **diseño detallado** (bajo nivel), buscando **bajo acoplamiento** y **alta cohesión**.
 - Una **topología de diseño** organiza y despliega los componentes; depende del **tipo de sistema**, los **RNF** y el **modelo de despliegue**.
 - **Escritorio:** local, offline, alto rendimiento, atado a la plataforma; arquitectura monolítica o en capas.
@@ -396,8 +576,13 @@ Tendencias actuales que extienden o reemplazan las topologías clásicas, fuerte
 |---|---|
 | Diseño, refinamiento y especificación | Introducción; especificación; refinamiento del diseño |
 | Especificaciones de requisitos y relación con diseño | SRS; trazabilidad; matriz de trazabilidad |
+| Validación, verificación y pruebas | Sección "Validación, verificación y pruebas asociadas al diseño" |
+| UML como apoyo al diseño | Sección "UML como puente entre requisitos, diseño e implementación" |
 | Topologías de diseño | Sección "Topologías de diseño" y guía de elección |
+| UML de componentes y despliegue | Sección "UML para componentes y despliegue" |
+| Diseño de componentes | Sección "Diseño en el nivel de componentes" |
 | Diseño de sistemas Web | Modelo n capas; HTTP; REST; SSR/CSR/SPA; herramientas |
+| WebApps, contenido, navegación y componentes | Sección "Pirámide de diseño de WebApps" |
 | Diseño de sistemas Móvil | Características, tipos de app y arquitectura móvil |
 | Diseño de sistemas de Escritorio | Arquitecturas y tabla de ventajas/limitaciones |
 | Topologías emergentes | Serverless, cloud-native, edge y contenedores |

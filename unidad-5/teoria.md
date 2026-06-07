@@ -119,6 +119,15 @@ Componentes:
 - **Actuadores:** transforman las decisiones del sistema en acciones físicas sobre el entorno (motores, válvulas, relés, pantallas). Reciben las **respuestas**. Se asocian a **procesos actuadores**.
 - **Lazo de control (control loop):** en muchos sistemas el efecto de los actuadores se realimenta a través de los sensores, cerrando el ciclo (control realimentado).
 
+Los apuntes de STR remarcan que el sensor y el actuador son el límite entre software y mundo físico:
+
+| Elemento | Rol | Ejemplos |
+|---|---|---|
+| **Sensor** | Detecta un cambio del entorno y lo convierte en una señal que el sistema puede procesar. | Temperatura, humedad, presión, velocidad, estado de puerta, proximidad. |
+| **Actuador** | Ejecuta una acción física ordenada por el sistema de control. | Motor, válvula, relé, freno, alarma, pantalla, servomecanismo. |
+
+El diseño debe considerar que estos dispositivos tienen **latencia**, precisión limitada, posibles fallas y frecuencias de lectura/acción distintas. Por eso se separan procesos sensores, procesos de control y procesos actuadores.
+
 Sommerville propone diseñar este tipo de sistemas identificando estímulos y respuestas, asociando un proceso a cada uno y definiendo sus restricciones temporales.
 
 ### El administrador o núcleo: RTOS

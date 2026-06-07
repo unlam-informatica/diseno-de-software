@@ -164,6 +164,62 @@ A estos se suman los **métodos ágiles** (agile), que aplican desarrollo increm
 {: .note }
 > En la práctica los modelos se combinan. Un proyecto puede usar un marco incremental/ágil global con prácticas de configuración y reutilización dentro de cada iteración.
 
+### Rational Unified Process (RUP)
+
+El **Rational Unified Process (RUP)** es un marco de proceso de desarrollo de software impulsado por UML, asociado a Jacobson, Booch y Rumbaugh. No es una receta única: es un proceso **configurable**, adaptable al tamaño del equipo, tipo de proyecto, dominio, riesgos y restricciones.
+
+RUP se caracteriza por ser:
+
+- **Dirigido por casos de uso**: los casos de uso capturan objetivos de los actores y guían requisitos, análisis, diseño, implementación y pruebas.
+- **Iterativo e incremental**: el producto se construye en iteraciones; cada iteración produce un incremento evaluable.
+- **Centrado en la arquitectura**: la arquitectura se estabiliza tempranamente y guía el desarrollo.
+- **Orientado a riesgos y calidad**: los riesgos relevantes se atacan temprano y la calidad se controla durante todo el proceso.
+- **Compatible con técnicas OO y UML**: usa modelos y diagramas como lenguaje común entre roles.
+
+```mermaid
+flowchart LR
+    I["Inicio<br/>alcance, vision, riesgos"] --> E["Elaboracion<br/>arquitectura base"]
+    E --> C["Construccion<br/>producto incremental"]
+    C --> T["Transicion<br/>entrega y aceptacion"]
+```
+
+RUP también se entiende en dos dimensiones:
+
+| Dimensión | Qué representa | Elementos |
+|---|---|---|
+| **Tiempo** | Evolución dinámica del proyecto. | Ciclos, fases, iteraciones e hitos. |
+| **Contenido / esfuerzo** | Trabajo técnico y de gestión que se ejecuta. | Disciplinas, actividades, roles y artefactos. |
+
+Disciplinas principales: **modelado del negocio**, **requisitos**, **análisis y diseño**, **implementación**, **pruebas** y **despliegue**. Disciplinas de soporte: **gestión de configuración y cambios**, **gestión del proyecto** y **entorno**.
+
+```mermaid
+flowchart TB
+    CU["Casos de uso"] --> REQ["Requisitos"]
+    CU --> AD["Analisis y diseno"]
+    CU --> IMP["Implementacion"]
+    CU --> TEST["Pruebas"]
+    AD --> ARQ["Arquitectura ejecutable"]
+    IMP --> INC["Incremento de software"]
+    TEST --> VAL["Validacion contra casos de uso"]
+```
+
+{: .note }
+> En RUP, los casos de uso no son solo documentación de requisitos: integran el trabajo. Se especifican, se realizan en análisis/diseño, se implementan y luego se verifican con pruebas.
+
+### Scrum, historias de usuario y backlog
+
+**Scrum** no es una metodología de diseño OO ni reemplaza a UML, GRASP o GoF. Es un marco ágil de gestión y entrega iterativa. En la práctica de la cátedra aparece asociado a **historias de usuario**, **backlog**, **sprint backlog**, prototipos y validación temprana.
+
+| Elemento | Función |
+|---|---|
+| **Historia de usuario** | Describe una necesidad valiosa para un usuario o rol. |
+| **Criterios de aceptación** | Definen cómo se verifica que la historia está cumplida. |
+| **Product backlog** | Lista priorizada de funcionalidades, mejoras y trabajo pendiente. |
+| **Sprint backlog** | Selección de trabajo comprometido para una iteración. |
+| **Sprint review / retrospectiva** | Inspección del incremento y mejora del proceso. |
+
+Una historia de usuario bien formulada debe ser **independiente, negociable, valiosa, estimable, pequeña y verificable**. Para diseño, su valor está en conectar una necesidad de usuario con prototipos, casos de uso, pruebas y decisiones de interfaz.
+
 ## Procesos de negocio vs. procesos de software
 
 Aunque ambos son "procesos", apuntan a cosas distintas y se relacionan de forma jerárquica.
@@ -442,7 +498,7 @@ La adopción cierra el ciclo iniciado en el proceso de negocio: el software solo
 - El diseño transita del **dominio del problema** (procesos de negocio) al **dominio de la solución** (software), manteniendo trazabilidad.
 - Desde **Larman**, ese tránsito pasa por casos de uso, modelo de dominio y asignación de responsabilidades; desde **GoF**, algunas decisiones pueden reutilizar patrones probados cuando corresponda.
 - Un **proceso de negocio** genera valor y se modela con **BPMN**; define qué debe soportar el sistema. Un **proceso de software** es cómo construimos ese sistema; sus actividades (Sommerville) son **especificación, diseño/implementación, validación y evolución**.
-- Modelos de proceso: **cascada**, **incremental**, **integración y configuración** y **ágil** (Sommerville); espiral y prototipado (Pressman & Maxim).
+- Modelos de proceso: **cascada**, **incremental**, **integración y configuración**, **RUP** y **ágil/Scrum**; espiral y prototipado como modelos evolutivos.
 - El **gobierno de procesos** alinea, controla y mejora los procesos (CMMI, ISO); gobierno ≠ gestión.
 - **Roles**: stakeholders, PO, analista, arquitecto, diseñador, desarrollador, QA, DevOps, PM, cada uno con responsabilidades propias.
 - Los **requisitos funcionales** dicen qué hace; los **no funcionales** (atributos de calidad) dicen cómo y suelen impactar la arquitectura.
@@ -457,6 +513,8 @@ La adopción cierra el ciclo iniciado en el proceso de negocio: el software solo
 | Del diseño de sistemas al diseño de software | Introducción; dominio del problema y solución; solución de software |
 | Procesos de negocio | Sección "Procesos de negocio" |
 | Procesos de software | Sección "Procesos de software" |
+| RUP, iteraciones, casos de uso y arquitectura | Sección "Rational Unified Process (RUP)" |
+| Scrum, historias de usuario y backlog | Sección "Scrum, historias de usuario y backlog" |
 | Gobierno de procesos | Sección "Gobierno de procesos" |
 | Roles | Sección "Roles en el diseño y desarrollo" |
 | Solución de software | Sección "Solución de software" |

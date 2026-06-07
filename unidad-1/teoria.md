@@ -120,6 +120,27 @@ Tradicionalmente se distinguen dos grandes fases dentro del diseño de software:
 {: .note }
 > Regla práctica: el diseño arquitectónico decide la **descomposición** (qué módulos hay); el diseño detallado decide la **implementación** (cómo es cada módulo por dentro). El primero apunta a alta cohesión y bajo acoplamiento entre módulos; el segundo, a la corrección y eficiencia de cada módulo.
 
+### Diseño estructurado
+
+El **diseño estructurado** es un enfoque clásico orientado a descomponer un sistema en **módulos procedimentales** y sus interconexiones. Aunque la cátedra prioriza el diseño OO con Larman/GoF, los apuntes lo incluyen porque aporta conceptos que siguen vigentes: descomposición, jerarquía de control, flujo de datos, cohesión y acoplamiento.
+
+| Concepto | Significado |
+|---|---|
+| **Diagrama de flujo de datos (DFD)** | Representa cómo se transforman y circulan los datos entre procesos, almacenes y entidades externas. |
+| **Diagrama de estructura** | Muestra la jerarquía de módulos y las llamadas/control entre ellos. |
+| **Estructura de datos** | Representa la organización lógica de los datos que condiciona el diseño procedimental. |
+| **Transformación / transacción** | Estrategias para pasar de flujos de entrada-proceso-salida a módulos. |
+
+```mermaid
+flowchart TB
+    A["Requisitos / DFD"] --> B["Identificar transformaciones"]
+    B --> C["Derivar modulos"]
+    C --> D["Evaluar cohesion y acoplamiento"]
+    D --> E["Diagrama de estructura"]
+```
+
+La diferencia con OO no está en buscar "buen diseño" o no: ambos enfoques buscan módulos cohesivos y débilmente acoplados. La diferencia central es la unidad de diseño: en estructurado predominan **funciones/módulos**; en OO predominan **objetos con responsabilidades**.
+
 ---
 
 ## Diferencias entre diseño de sistemas y diseño de software
@@ -388,6 +409,20 @@ En diseño OO, bajo acoplamiento significa que una clase conoce lo mínimo neces
 
 {: .note }
 > Meta de diseño: tender al **acoplamiento de datos**. Pasar solo lo necesario por parámetros, evitar variables globales (acoplamiento común) y banderas de control (acoplamiento de control), y nunca tocar el interior de otro módulo (acoplamiento de contenido).
+
+### Ley de Demeter
+
+La **Ley de Demeter** es una regla práctica para reducir acoplamiento: un objeto debería hablar solo con sus colaboradores inmediatos, no navegar cadenas largas de objetos ajenos.
+
+```text
+# A evitar: conoce demasiado la estructura interna de otros objetos
+cliente.getCuenta().getBanco().getSucursal().validar()
+
+# Mejor: pedir el servicio al colaborador directo
+cliente.validarCuenta()
+```
+
+No es una ley absoluta, pero ayuda a detectar "envidia de datos" y diseños donde una clase conoce detalles que deberían estar encapsulados en otra.
 
 **Ejemplo de acoplamiento de control (a evitar):**
 
@@ -662,6 +697,50 @@ Para evaluar la calidad de la representación de diseño, Hewlett-Packard defini
 {: .note }
 > Un buen diseño no se mide por lo "elegante" que parezca, sino por su capacidad de cumplir los requisitos y de **sostener el cambio** en el tiempo: modularidad, independencia funcional, bajo acoplamiento, alta cohesión y ocultamiento de información son los medios para lograrlo.
 
+### Miradas sobre la calidad
+
+Las referencias de la cátedra remarcan que la calidad no tiene una única lectura. Garvin propone mirarla desde varios puntos de vista:
+
+| Punto de vista | Pregunta típica |
+|---|---|
+| **Trascendental** | ¿La calidad se reconoce aunque sea difícil de definir? |
+| **Usuario** | ¿Satisface las metas reales del usuario final? |
+| **Fabricante / proceso** | ¿Cumple las especificaciones definidas? |
+| **Producto** | ¿Qué características internas y externas posee? |
+| **Valor** | ¿La calidad justifica el costo para el cliente? |
+
+Para diseño de software, estas miradas se traducen en dos conceptos importantes:
+
+- **Calidad de diseño**: grado en que el diseño previsto satisface las funciones, restricciones y atributos de calidad requeridos.
+- **Calidad de conformidad**: grado en que la implementación respeta el diseño y cumple los requisitos acordados.
+
+```mermaid
+flowchart LR
+    R["Requisitos"] --> D["Diseno"]
+    D --> I["Implementacion"]
+    R --> QD["Calidad de diseno<br/>cumple lo requerido?"]
+    D --> QC["Calidad de conformidad<br/>se implemento lo disenado?"]
+    I --> U["Satisfaccion del usuario"]
+```
+
+La fórmula práctica de Glass, citada en las clases, resume el resultado esperado:
+
+```text
+satisfaccion del usuario = producto que funciona + buena calidad + entrega dentro del presupuesto y plazo
+```
+
+### Factores clásicos de calidad
+
+Además de FURPS, las referencias mencionan modelos clásicos como **McCall**, que organizan la calidad en factores orientados a operación, revisión y transición del producto.
+
+| Grupo | Factores típicos | Idea |
+|---|---|---|
+| **Operación del producto** | Corrección, confiabilidad, eficiencia, integridad, usabilidad. | Qué tan bien funciona en uso. |
+| **Revisión del producto** | Mantenibilidad, flexibilidad, testeabilidad. | Qué tan fácil es cambiarlo y verificarlo. |
+| **Transición del producto** | Portabilidad, reusabilidad, interoperabilidad. | Qué tan bien puede moverse, reutilizarse o integrarse. |
+
+Estos modelos no reemplazan a los atributos de calidad modernos; sirven como vocabulario para justificar decisiones de diseño y evaluar compromisos.
+
 ### Criterio práctico de evaluación
 
 Ante una propuesta de diseño, conviene hacer estas preguntas:
@@ -683,6 +762,7 @@ Ante una propuesta de diseño, conviene hacer estas preguntas:
 - **Diseño:** traduce el **modelo de requisitos** (qué) en el **modelo de diseño** (cómo). Entrada = requisitos; salida = modelo de diseño (datos, arquitectura, interfaces, componentes).
 - **En diseño OO (Larman):** diseñar es **asignar responsabilidades** a objetos: qué conocen, qué hacen y cómo colaboran.
 - **Diseño preliminar/arquitectónico** = estructura global (qué módulos); **diseño detallado** = interior de cada módulo (cómo es por dentro).
+- **Diseño estructurado:** enfoque clásico basado en DFD, diagramas de estructura, jerarquía de módulos y transformación de flujos; útil para entender descomposición procedimental.
 - **Diseño de sistemas vs. software:** el de sistemas abarca HW + SW + personas y decide *qué* resuelve el software; el de software diseña *cómo* se estructura internamente esa porción de software. El de software empieza donde termina el de sistemas.
 - **Abstracción:** ocultar detalles para manejar complejidad. Tipos: **de datos, procedimental, de control**. Sube el nivel.
 - **Refinamiento paso a paso (Wirth):** descomponer una función de alto nivel en pasos cada vez más detallados hasta llegar al código. Baja el nivel. Complementario de la abstracción.
@@ -694,7 +774,7 @@ Ante una propuesta de diseño, conviene hacer estas preguntas:
 - **Separación de intereses:** dividir el problema en partes resolubles por separado (justifica la modularidad y las capas).
 - **Rediseño:** revisar una solución para mejorarla o adaptarla. **Refactoring:** rediseño interno sin cambiar comportamiento externo; sirve para **pagar deuda técnica**.
 - **Reutilización:** niveles → código, componentes, **patrones**, frameworks, sistemas. En GoF, los patrones reutilizan **conocimiento de diseño**: creacionales, estructurales y de comportamiento.
-- **Buen diseño (Pressman):** implementa los requisitos, es legible/guía, da imagen completa; modular, con independencia funcional, interfaces simples; calidad medible con **FURPS**.
+- **Buen diseño (Pressman):** implementa los requisitos, es legible/guía, da imagen completa; modular, con independencia funcional, interfaces simples; calidad medible con **FURPS**, Garvin/McCall y criterios de diseño/conformidad.
 
 ### Cobertura del programa de la unidad 1
 
@@ -702,6 +782,7 @@ Ante una propuesta de diseño, conviene hacer estas preguntas:
 | --- | --- |
 | Diseño de software | Introducción; el diseño dentro del proceso |
 | Diferencias entre diseño de sistemas y diseño de software | Sección específica comparativa |
+| Diseño estructurado | Sección "Diseño estructurado" |
 | Abstracción | Sección "Abstracción" |
 | Refinamiento | Sección "Refinamiento paso a paso" |
 | Modularidad | Sección "Modularidad" |
@@ -710,3 +791,5 @@ Ante una propuesta de diseño, conviene hacer estas preguntas:
 | Rediseño | Sección "Rediseño y refactoring" |
 | Independencia funcional | Sección "Independencia funcional" |
 | Reutilización | Sección "Reutilización" |
+| Atributos de calidad y buen diseño | Sección "Atributos de calidad y características de un buen diseño" |
+| Calidad de diseño, conformidad y factores clásicos | Secciones "Miradas sobre la calidad" y "Factores clásicos de calidad" |

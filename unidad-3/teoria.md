@@ -148,6 +148,13 @@ Los **GRASP** (*General Responsibility Assignment Software Patterns* — patrone
 
 Una **responsabilidad** es una obligación de un objeto: *de conocer* (saber datos, derivarlos) o *de hacer* (crear objetos, ejecutar cálculos, coordinar a otros).
 
+| Tipo de responsabilidad | Incluye | Ejemplo |
+|---|---|---|
+| **Conocer** | Conocer datos privados encapsulados; conocer objetos relacionados; derivar o calcular información. | `Venta` conoce sus líneas; `LineaDeVenta` conoce cantidad y producto. |
+| **Hacer** | Hacer algo por sí mismo; iniciar acciones en otros objetos; controlar o coordinar actividades. | `ControladorVenta` coordina una operación del sistema; `Venta` crea una línea. |
+
+En Larman, estas responsabilidades se asignan mientras se diseñan **diagramas de interacción**: se decide qué objeto recibe cada mensaje y qué colaboración permite cumplir el caso de uso.
+
 | Patrón GRASP | Problema | Solución (asignar a…) |
 |---|---|---|
 | **Experto en Información** | ¿Quién debe tener una responsabilidad? | La clase que posee la información necesaria para cumplirla. |
@@ -174,6 +181,19 @@ Una **responsabilidad** es una obligación de un objeto: *de conocer* (saber dat
 
 - **Problema**: ¿qué objeto, fuera de la capa de UI, recibe y coordina una operación del sistema?
 - **Solución**: asignar la responsabilidad a un **controlador**: una clase que represente el sistema global/raíz, un dispositivo, un subsistema (*facade controller*), o un escenario de caso de uso (*use-case controller*). Evita que la UI tenga lógica de negocio.
+
+Formas habituales:
+
+| Variante | Cuándo conviene | Riesgo |
+|---|---|---|
+| **Controlador de fachada** | Pocos eventos del sistema o un subsistema claro (`Sistema`, `TPDV`, `Aplicacion`). | Puede saturarse si recibe demasiados casos de uso. |
+| **Controlador por caso de uso** | Un flujo complejo necesita coordinación propia (`RegistrarVentaController`). | Proliferación de clases si se usa sin criterio. |
+| **Controlador por componente/módulo** | Varios casos de uso relacionados comparten naturaleza funcional. | Debe delegar; no debe convertirse en objeto todopoderoso. |
+
+{: .note }
+> En el examen, según las aclaraciones de clase, puede ser más razonable diseñar **controladores por componente** que un controlador por cada caso de uso. El criterio sigue siendo GRASP: recibir eventos del sistema, coordinar y delegar la lógica a objetos expertos.
+
+Un **controlador saturado** tiene baja cohesión: recibe demasiados eventos, realiza él mismo el trabajo del dominio, acumula datos que deberían estar en otros objetos o no delega. La corrección típica es dividir controladores y mover responsabilidades a expertos del dominio o fabricaciones puras.
 
 ### Bajo Acoplamiento (Low Coupling)
 
@@ -207,6 +227,38 @@ Una **responsabilidad** es una obligación de un objeto: *de conocer* (saber dat
 
 {: .note }
 > GRASP responde **dónde** poner la responsabilidad; GoF ofrece **soluciones concretas** ya empaquetadas. Bajo Acoplamiento, Alta Cohesión y Variaciones Protegidas son los "principios sombrilla": casi todo patrón GoF puede explicarse como una forma de lograrlos.
+
+### Diagramas de interacción: secuencia y comunicación
+
+Los GRASP se aplican mejor sobre **diagramas de interacción**, porque ahí se ve la asignación de responsabilidades como mensajes entre objetos.
+
+| Diagrama | Enfatiza | Uso didáctico |
+|---|---|---|
+| **Secuencia** | Orden temporal de los mensajes, de arriba hacia abajo. | Entender el flujo de un escenario de caso de uso. |
+| **Comunicación / colaboración** | Enlaces entre objetos y numeración de mensajes. | Ver qué objetos se conocen y evaluar acoplamiento. |
+
+```mermaid
+sequenceDiagram
+    actor Cajero
+    participant ControladorVenta
+    participant Venta
+    participant Pago
+
+    Cajero->>ControladorVenta: efectuarPago(monto)
+    ControladorVenta->>Venta: efectuarPago(monto)
+    Venta->>Pago: crear(monto)
+```
+
+El mismo diseño puede leerse como comunicación numerada:
+
+```mermaid
+flowchart LR
+    C["Cajero"] -->|"1: efectuarPago(monto)"| CV["ControladorVenta"]
+    CV -->|"1.1: efectuarPago(monto)"| V["Venta"]
+    V -->|"1.1.1: crear(monto)"| P["Pago"]
+```
+
+La pregunta de diseño no es solo "qué mensaje se envía", sino si esa asignación mantiene **alta cohesión** y **bajo acoplamiento**.
 
 ### Ejemplo integrador GRASP: registrar una venta
 
@@ -777,6 +829,7 @@ Para el parcial conviene poder, de cada patrón: nombrarlo, decir su **categorí
 | Objetivos de los patrones | Definición, beneficios y cómo aplicar un patrón |
 | Estructura de los patrones | Elementos GoF; diagramas de estructura |
 | Aplicación práctica | Ejemplos, guía rápida y diagramas Mermaid |
+| Diagramas de interacción para asignar responsabilidades | Sección "Diagramas de interacción: secuencia y comunicación" |
 | Patrones creacionales | Sección "Patrones creacionales" |
 | Patrones estructurales | Sección "Patrones estructurales" |
 | Patrones de comportamiento | Sección "Patrones de comportamiento" |
