@@ -13,6 +13,7 @@ Resolución de los **casos prácticos** de la guía de ejercicios de la cátedra
 
 - [Práctica 1 — Caso "Farmacia" (Parafarma)](practica-1.html) — análisis y diseño OO de un e-commerce de farmacia.
 - [Práctica 2 — Caso "Banco Olivares"](practica-2.html) — diseño del módulo de préstamos, evaluación crediticia y refinanciación.
+- [Guía de resolución](metodologia.html) — secuencia de trabajo para pasar del enunciado a casos de uso, clases candidatas y diagramas.
 
 {: .note }
 > Los casos restantes de la guía (Estadios, Fútbol con patrones GoF, Mundo Juguetes, Ruta, Citrales) se irán incorporando como nuevas páginas de práctica.
