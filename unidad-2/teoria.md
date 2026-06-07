@@ -185,6 +185,8 @@ flowchart LR
 
 RUP también se entiende en dos dimensiones:
 
+![Fases y disciplinas de RUP]({{ '/assets/img/rup.svg' | relative_url }})
+
 | Dimensión | Qué representa | Elementos |
 |---|---|---|
 | **Tiempo** | Evolución dinámica del proyecto. | Ciclos, fases, iteraciones e hitos. |

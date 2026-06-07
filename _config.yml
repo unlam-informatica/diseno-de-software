@@ -42,6 +42,7 @@ aux_links:
 
 exclude:
   - CLAUDE.md
+  - AGENTS.md
 
 mermaid:
   # Diagramas embebidos en bloques ```mermaid (cargado desde CDN por el tema).

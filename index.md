@@ -38,6 +38,9 @@ UX vs UI. Principios de las interfaces, diseño de contenidos, menús, íconos y
 ### [Prácticas](./practicas/)
 Resolución de los casos de la guía de ejercicios (casos de uso, clases candidatas según Larman y diagramas UML). Una página por práctica.
 
+### [Guía de diagramas](./diagramas.html)
+Leyenda común para interpretar los diagramas del sitio: UML, Mermaid, clases, secuencia, estados, casos de uso, actividad, componentes, despliegue y redes de Petri.
+
 ---
 
 ## Evaluación
