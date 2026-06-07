@@ -60,13 +60,17 @@ body {
     font-size: 0.9rem;
     line-height: 1.5;
     margin: 1.25rem 0;
+    background: transparent;
     border-collapse: collapse;
     border: none;
+    border-radius: 0;
+    box-shadow: none;
 
     th,
     td {
       padding: 0.65rem 0.9rem;
       text-align: left;
+      background: transparent;
       border: none;
       border-bottom: 1px solid var(--border-color);
       vertical-align: top;
