@@ -54,12 +54,21 @@ body {
   // Estilo simple y aireado: sin caja exterior ni cebra. Solo un encabezado
   // claro con línea de acento, separadores horizontales finos entre filas y un
   // hover sutil. Menos ruido visual = más fácil de leer.
+  .table-wrapper {
+    margin: 1.25rem 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
   table {
     display: table;            // anula el `display: block` del tema (que rompe el ancho)
     width: 100%;
     font-size: 0.9rem;
     line-height: 1.5;
-    margin: 1.25rem 0;
+    margin: 0;
     background: transparent;
     border-collapse: collapse;
     border: none;
