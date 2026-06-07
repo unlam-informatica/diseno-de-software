@@ -6,7 +6,7 @@ nav_order: 1
 
 # Práctica 1 — Caso "Farmacia" (Parafarma)
 
-Resolución del **Ejercicio 1** de la guía de la cátedra. Es un caso integral de **análisis y diseño orientado a objetos** (casos de uso → clases candidatas según Larman → diagramas UML). El alcance del modelado se centra en el **canal de venta online** (e-commerce), que es la parte detallada del enunciado.
+Resolución propuesta del **Ejercicio 1** de la guía de la cátedra. Es un caso integral de **análisis y diseño orientado a objetos** (casos de uso → clases candidatas según Larman → diagramas UML). El alcance del modelado se centra en el **canal de venta online** (e-commerce), que es la parte detallada del enunciado.
 
 {: .enunciado }
 > Parafarma es una cadena de farmacias que brinda servicios en distintas localidades de Buenos Aires. Ofrece a sus clientes dos canales de venta, por una parte, la venta de modo tradicional en mostrador, y, por otra parte, brinda la posibilidad de realizar compras online de productos de distintos rubros como cosmética y belleza, salud y nutrición, higiene, entre otros; vale aclarar que por este canal NO se venden ni publicitan especialidades medicinales, ni medicamentos de venta libre o de venta bajo receta.
@@ -42,9 +42,9 @@ Resolución del **Ejercicio 1** de la guía de la cátedra. Es un caso integral 
 | Actor | Tipo | Rol |
 |---|---|---|
 | **Cliente** | Principal | Se registra, arma el pedido, elige envío y paga. |
-| **Sistema de Pago** (pasarela de tarjeta) | Secundario / externo | Autoriza y verifica el pago con tarjeta de crédito. |
-| **Sistema de Facturación (AFIP)** | Secundario / externo | Emite la factura electrónica (Res. 2975). |
-| **Servicio de Correo** | Secundario / externo | Envía el correo de confirmación. |
+| **Sistema de Pago** (pasarela de tarjeta) | Secundario / externo | Autoriza el pago con tarjeta de crédito. |
+| **Servicio de Facturación Electrónica / AFIP** | Secundario / externo | Permite emitir la factura electrónica según la normativa indicada. |
+| **Servicio de Correo** | Secundario / externo | Envía el correo de confirmación cuando se usa una infraestructura externa de notificación. |
 
 ### Lista de casos de uso (canal online)
 
@@ -54,15 +54,16 @@ Resolución del **Ejercicio 1** de la guía de la cátedra. Es un caso integral 
 - **CU4 – Agregar producto al carrito** (seleccionar producto + cantidad)
 - **CU5 – Gestionar carrito** (modificar cantidades / quitar)
 - **CU6 – Indicar envío** (domicilio o retiro en sucursal)
-- **CU7 – Realizar compra online** (*checkout*) — «include» CU2, CU8, CU9
-- **CU8 – Registrar pago con tarjeta**
+- **CU7 – Realizar compra online** (*checkout*) — «include» CU2, CU6, CU8, CU9, CU11
+- **CU8 – Autorizar pago con tarjeta**
 - **CU9 – Emitir factura electrónica**
 - **CU10 – Seguir mis compras** (historial)
+- **CU11 – Enviar confirmación**
 
 ### CU7 — Realizar compra online (formato expandido)
 
 {: .resolucion }
-> **Actor principal:** Cliente · **Personal involucrado:** Sistema de Pago, Facturación AFIP, Servicio de Correo.
+> **Actor principal:** Cliente · **Actores secundarios:** Sistema de Pago, Servicio de Facturación Electrónica / AFIP, Servicio de Correo.
 >
 > **Precondiciones:** el cliente está **registrado**; el catálogo está disponible; el carrito tiene al menos un producto.
 >
@@ -79,7 +80,7 @@ Resolución del **Ejercicio 1** de la guía de la cátedra. Es un caso integral 
 > 6. El cliente ingresa los **datos de la tarjeta de crédito**.
 > 7. El sistema solicita la **autorización** al Sistema de Pago (CU8).
 > 8. El Sistema de Pago **aprueba** el pago.
-> 9. El sistema **emite la factura electrónica** vía AFIP (CU9) y registra la compra.
+> 9. El sistema **registra la compra** y **emite la factura electrónica** vía el servicio de facturación (CU9).
 > 10. El sistema **envía el correo de confirmación** con la factura y muestra la confirmación.
 >
 > **Flujos alternativos:**
@@ -101,7 +102,7 @@ Resolución del **Ejercicio 1** de la guía de la cátedra. Es un caso integral 
 flowchart LR
     Cliente(["Cliente"])
     Pago(["Sistema de Pago"])
-    AFIP(["Facturación AFIP"])
+    AFIP(["Servicio de Facturación Electrónica / AFIP"])
     Correo(["Servicio de Correo"])
 
     subgraph S["Parafarma — Canal online"]
@@ -110,28 +111,32 @@ flowchart LR
         CU2(["Autenticarse"])
         CU3(["Consultar catálogo"])
         CU4(["Agregar producto al carrito"])
+        CU5(["Gestionar carrito"])
         CU6(["Indicar envío"])
         CU7(["Realizar compra online"])
-        CU8(["Registrar pago"])
-        CU9(["Emitir factura"])
+        CU8(["Autorizar pago con tarjeta"])
+        CU9(["Emitir factura electrónica"])
         CU10(["Seguir mis compras"])
+        CU11(["Enviar confirmación"])
     end
 
     Cliente --- CU1
     Cliente --- CU2
     Cliente --- CU3
     Cliente --- CU4
+    Cliente --- CU5
     Cliente --- CU6
     Cliente --- CU7
     Cliente --- CU10
 
     CU7 -. include .-> CU2
+    CU7 -. include .-> CU6
     CU7 -. include .-> CU8
     CU7 -. include .-> CU9
+    CU7 -. include .-> CU11
     CU8 --- Pago
     CU9 --- AFIP
-    CU9 -. include .-> CU_mail([Enviar confirmación])
-    CU_mail --- Correo
+    CU11 --- Correo
 ```
 
 ---
@@ -192,15 +197,16 @@ Método de Larman por **identificación lingüística**: se extraen los **sustan
 | datos para el pago | Clase | **Pago** |
 | tarjeta de crédito | Clase | **TarjetaCrédito** |
 | factura | Clase | **Factura** |
+| valor de la compra / zona / modalidad para calcular envío | Clase de política/regla | **PoliticaEnvio** |
 | cantidad de unidades | ❌ atributo de *ItemCarrito* | — |
-| costo del envío | ❌ atributo de *ModalidadEnvío* | — |
+| costo del envío | ❌ valor calculado de la modalidad/política de envío | — |
 | compra mínima ($300) | ❌ regla de negocio | — |
 | persona mayor de edad / horario 9–18 | ❌ restricción / atributo | — |
 | localidad | ❌ atributo de *Sucursal/Domicilio* | — |
 | canal de venta | ❌ concepto, fuera de alcance | — |
 | correo de confirmación | ❌ evento / mensaje (no es entidad) | — |
 
-**Clases candidatas resultantes:** Cliente, Producto, Rubro, Catálogo, Carrito, ItemCarrito, Pedido, ModalidadEnvío, Domicilio, Sucursal, Zona, Pago, TarjetaCrédito, Factura.
+**Clases candidatas resultantes:** Cliente, Producto, Rubro, Catálogo, Carrito, ItemCarrito, Pedido, ModalidadEnvío, Domicilio, Sucursal, Zona, Pago, TarjetaCrédito, Factura, PoliticaEnvio.
 
 ---
 
@@ -211,19 +217,22 @@ Las mismas clases, ahora ubicadas según la **lista de categorías conceptuales*
 | Categoría conceptual (Larman) | Clases candidatas en el caso |
 |---|---|
 | Objetos tangibles o físicos | **Producto** |
-| Especificaciones / descripciones | **Rubro**, DescripciónDeProducto |
+| Especificaciones / descripciones | **Rubro**; DescripciónDeProducto si se desea separar datos descriptivos del producto |
 | Lugares | **Sucursal**, **Domicilio**, **Zona** |
 | Transacciones | **Pedido**, **Pago** |
 | Líneas de la transacción | **ItemCarrito** (LíneaDePedido) |
 | Roles de la gente | **Cliente** |
 | Contenedores de otras cosas | **Carrito**, **Catálogo** |
 | Cosas en un contenedor | Producto (en catálogo), ItemCarrito (en carrito) |
-| Otros sistemas externos | **SistemaDePago**, **SistemaFacturaciónAFIP**, ServicioCorreo |
-| Organizaciones | Parafarma (la cadena) |
-| Catálogos | **Catálogo**, ListaDePrecios |
+| Otros sistemas externos | SistemaDePago, ServicioFacturaciónElectrónica/AFIP, ServicioCorreo |
+| Organizaciones | Parafarma (la cadena), normalmente como contexto del sistema y no como clase del modelo básico |
+| Catálogos | **Catálogo** |
 | Registros financieros / legales | **Factura** |
 | Instrumentos y servicios financieros | **TarjetaCrédito** |
-| Reglas y políticas | PolíticaDeEnvío, CompraMínima |
+| Reglas y políticas | **PoliticaEnvio**; CompraMínima como regla configurable del checkout |
+
+{: .note }
+> La lista por categorías puede sugerir candidatos de **diseño** o de infraestructura, como servicios externos y políticas. En el diagrama básico se incluyen solo los que ayudan a explicar el dominio y las reglas centrales; los servicios externos aparecen con más claridad en los diagramas de interacción.
 
 ---
 
@@ -272,6 +281,11 @@ classDiagram
       <<abstract>>
       +costo()
     }
+    class PoliticaEnvio {
+      +montoMinimo
+      +calcularCosto(subtotal, zona)
+      +validarCompraMinima(subtotal)
+    }
     class EnvioADomicilio {
       +costo()
     }
@@ -314,6 +328,7 @@ classDiagram
     Pedido "1" *-- "1..*" LineaDePedido
     LineaDePedido "0..*" --> "1" Producto
     Pedido "1" --> "1" ModalidadEnvio
+    ModalidadEnvio ..> PoliticaEnvio : calcula con
     ModalidadEnvio <|-- EnvioADomicilio
     ModalidadEnvio <|-- RetiroEnSucursal
     EnvioADomicilio "1" --> "1" Domicilio
@@ -370,8 +385,9 @@ sequenceDiagram
     C->>P: finalizarCompra()
     P->>Ca: obtenerItems()
     Ca-->>P: items, subtotal
-    P->>P: validarMontoMinimo(subtotal)
+    P->>P: validarCompraMinima(subtotal)
     C->>P: elegirEnvio(modalidad, domicilio/sucursal)
+    P->>P: calcularCostoEnvio(subtotal, zona)
     P->>Pe: crear(items, envio)
     Pe->>Pe: calcularTotal()
     C->>P: pagar(tarjeta)
@@ -403,12 +419,14 @@ flowchart LR
 
     C -->|"1: finalizarCompra()"| P
     P -->|"2: obtenerItems()"| Ca
-    P -->|"3: crear(items, envio)"| Pe
-    C -->|"4: pagar(tarjeta)"| P
-    P -->|"5: autorizar(tarjeta, total)"| SP
-    P -->|"6: registrarPago()"| Pe
-    P -->|"7: emitirFactura(pedido)"| F
-    P -->|"8: enviarConfirmacion(...)"| M
+    P -->|"3: validarCompraMinima(subtotal)"| P
+    P -->|"4: calcularCostoEnvio(subtotal, zona)"| P
+    P -->|"5: crear(items, envio)"| Pe
+    C -->|"6: pagar(tarjeta)"| P
+    P -->|"7: autorizar(tarjeta, total)"| SP
+    P -->|"8: registrarPago()"| Pe
+    P -->|"9: emitirFactura(pedido)"| F
+    P -->|"10: enviarConfirmacion(...)"| M
 ```
 
 {: .note }
