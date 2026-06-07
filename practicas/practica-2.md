@@ -74,7 +74,6 @@ Resolución propuesta del **Ejercicio 2** de la guía de la cátedra. El caso se
 - **CU9 – Refinanciar préstamo**
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 flowchart LR
     Admin(["Administrador"])
     Ejecutivo(["Ejecutivo de Cuenta"])
@@ -128,7 +127,6 @@ flowchart LR
 Flujo principal para evaluar un préstamo y, luego, controlar mora y refinanciar cuando corresponde.
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 flowchart TD
     A([Inicio]) --> B["Seleccionar cliente"]
     B --> C{"¿Tiene ejecutivo asignado?"}
@@ -219,7 +217,6 @@ Método de Larman por identificación de sustantivos y frases nominales. Se desc
 Modelo orientado a responsabilidades. `Prestamo` concentra el comportamiento común; los subtipos incorporan las restricciones particulares del enunciado.
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 classDiagram
     class Usuario {
       +idUsuario
@@ -351,7 +348,6 @@ classDiagram
 Escenario significativo: **evaluar mora y refinanciar un préstamo** cuando el cliente acumula tres meses de atraso.
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     actor E as EjecutivoDeCuenta
     participant UI as PantallaPrestamos
@@ -387,7 +383,6 @@ sequenceDiagram
 Mismo escenario que el diagrama de secuencia, representado como enlaces entre objetos con mensajes numerados.
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 flowchart LR
     E(["EjecutivoDeCuenta"])
     UI[":PantallaPrestamos"]
@@ -415,7 +410,6 @@ flowchart LR
 Ciclo de vida del objeto **Prestamo**.
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 stateDiagram-v2
     [*] --> Solicitado
     Solicitado --> EnEvaluacion : iniciar evaluación
@@ -438,7 +432,6 @@ stateDiagram-v2
 Vista lógica del módulo de préstamos y sus dependencias.
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 flowchart LR
     UI["Web / UI Ejecutivos"]
     API["API Módulo Préstamos"]
@@ -468,7 +461,6 @@ flowchart LR
 Vista física sugerida para operar el módulo.
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 flowchart LR
     subgraph ClienteBanco["Puesto del ejecutivo"]
         Browser["Navegador web"]

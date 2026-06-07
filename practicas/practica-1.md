@@ -98,7 +98,6 @@ Resolución propuesta del **Ejercicio 1** de la guía de la cátedra. Es un caso
 ## 2. Diagrama de casos de uso
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 flowchart LR
     Cliente(["Cliente"])
     Pago(["Sistema de Pago"])
@@ -146,7 +145,6 @@ flowchart LR
 Flujo de la compra online, desde el ingreso hasta la confirmación.
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 flowchart TD
     A([Inicio]) --> B{"¿Cliente registrado?"}
     B -- No --> R["Registrarse"]
@@ -241,7 +239,6 @@ Las mismas clases, ahora ubicadas según la **lista de categorías conceptuales*
 Modelo del dominio con las clases candidatas, sus asociaciones y multiplicidades. `ModalidadEnvío` se especializa en las dos opciones del enunciado.
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 classDiagram
     class Cliente {
       +idCliente
@@ -349,7 +346,6 @@ classDiagram
 Ciclo de vida del objeto **Pedido**, que nace al confirmar el carrito y termina con la entrega.
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 stateDiagram-v2
     [*] --> PendienteDePago : confirmar carrito (monto ≥ $300)
     PendienteDePago --> Pagado : pago aprobado
@@ -372,7 +368,6 @@ stateDiagram-v2
 Escenario significativo: **finalizar la compra y pagar** (flujo principal del CU7).
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     actor C as Cliente
     participant P as Portal
@@ -407,7 +402,6 @@ sequenceDiagram
 Mismo escenario que el diagrama de secuencia, pero resaltando los **enlaces entre objetos** y la **numeración** de los mensajes (Mermaid no tiene un tipo nativo de colaboración; se representa con un grafo de objetos y mensajes numerados).
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 flowchart LR
     C(["Cliente"])
     P[":Portal"]

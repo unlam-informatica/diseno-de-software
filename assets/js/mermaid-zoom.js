@@ -71,7 +71,6 @@
     var clone = svg.cloneNode(true);
     var width = Math.min(Math.round(getSvgBaseWidth(svg) * 1.35), 2400);
 
-    clone.removeAttribute('id');
     clone.removeAttribute('height');
     clone.style.width = 'max(100%, ' + width + 'px)';
     clone.style.height = 'auto';
