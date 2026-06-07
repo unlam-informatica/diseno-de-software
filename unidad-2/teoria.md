@@ -166,7 +166,13 @@ A estos se suman los **métodos ágiles** (agile), que aplican desarrollo increm
 
 ### Rational Unified Process (RUP)
 
-El **Rational Unified Process (RUP)** es un marco de proceso de desarrollo de software impulsado por UML, asociado a Jacobson, Booch y Rumbaugh. No es una receta única: es un proceso **configurable**, adaptable al tamaño del equipo, tipo de proyecto, dominio, riesgos y restricciones.
+El **Rational Unified Process (RUP)** es un marco de proceso de desarrollo de software impulsado por UML, asociado a Jacobson, Booch y Rumbaugh. No es una receta fija: es un proceso **configurable**, adaptable al tamaño del equipo, al dominio, a los riesgos y a las restricciones del proyecto.
+
+La idea central de RUP es simple: **construir software en iteraciones, priorizando los casos de uso más valiosos y atacando temprano los riesgos importantes**, en especial los riesgos arquitectónicos. Por eso RUP combina tres decisiones a la vez:
+
+- **qué se construye**: los casos de uso y escenarios relevantes;
+- **cómo se construye**: una arquitectura estable y evolutiva;
+- **cuándo se valida**: en cada iteración, no solo al final.
 
 RUP se caracteriza por ser:
 
@@ -178,9 +184,14 @@ RUP se caracteriza por ser:
 
 ```mermaid
 flowchart LR
-    I["Inicio<br/>alcance, vision, riesgos"] --> E["Elaboracion<br/>arquitectura base"]
-    E --> C["Construccion<br/>producto incremental"]
-    C --> T["Transicion<br/>entrega y aceptacion"]
+    I["Inicio<br/>definir alcance y viabilidad"] --> E["Elaboracion<br/>estabilizar la arquitectura"]
+    E --> C["Construccion<br/>completar el producto"]
+    C --> T["Transicion<br/>entregar y aceptar"]
+
+    I -. salida .-> I1["Visión<br/>caso de negocio<br/>riesgos principales"]
+    E -. salida .-> E1["Arquitectura base<br/>casos de uso críticos<br/>modelo de dominio"]
+    C -. salida .-> C1["Incrementos ejecutables<br/>funcionalidad priorizada"]
+    T -. salida .-> T1["Producto liberado<br/>usuarios capacitados<br/>ajustes finales"]
 ```
 
 RUP también se entiende en dos dimensiones:
@@ -194,19 +205,38 @@ RUP también se entiende en dos dimensiones:
 
 Disciplinas principales: **modelado del negocio**, **requisitos**, **análisis y diseño**, **implementación**, **pruebas** y **despliegue**. Disciplinas de soporte: **gestión de configuración y cambios**, **gestión del proyecto** y **entorno**.
 
+### Qué hace cada fase
+
 ```mermaid
 flowchart TB
-    CU["Casos de uso"] --> REQ["Requisitos"]
-    CU --> AD["Analisis y diseno"]
-    CU --> IMP["Implementacion"]
-    CU --> TEST["Pruebas"]
-    AD --> ARQ["Arquitectura ejecutable"]
-    IMP --> INC["Incremento de software"]
-    TEST --> VAL["Validacion contra casos de uso"]
+    I["Inicio"] --> I1["Objetivo:<br/>definir alcance, visión y viabilidad"]
+    I --> I2["Se decide:<br/>qué problema vale la pena resolver"]
+    I --> I3["Salida esperada:<br/>caso de negocio y riesgos principales"]
+
+    E["Elaboración"] --> E1["Objetivo:<br/>atacar riesgos y fijar la arquitectura base"]
+    E --> E2["Se decide:<br/>si la solución es técnicamente viable"]
+    E --> E3["Salida esperada:<br/>arquitectura ejecutable y casos de uso críticos"]
+
+    C["Construcción"] --> C1["Objetivo:<br/>desarrollar el producto en incrementos"]
+    C --> C2["Se decide:<br/>qué funcionalidad entra en cada iteración"]
+    C --> C3["Salida esperada:<br/>incrementos ejecutables y probados"]
+
+    T["Transición"] --> T1["Objetivo:<br/>poner el producto en manos de usuarios"]
+    T --> T2["Se decide:<br/>si la versión está lista para liberarse"]
+    T --> T3["Salida esperada:<br/>aceptación, capacitación y ajustes finales"]
 ```
 
 {: .note }
 > En RUP, los casos de uso no son solo documentación de requisitos: integran el trabajo. Se especifican, se realizan en análisis/diseño, se implementan y luego se verifican con pruebas.
+
+### Lectura de las fases
+
+| Fase | Qué pasa | Qué conviene conseguir |
+|---|---|---|
+| **Inicio** | Se define el problema, el alcance y la viabilidad del proyecto. | Un marco claro de negocio, riesgos y objetivos. |
+| **Elaboración** | Se profundiza el dominio y se estabiliza la arquitectura sobre los casos de uso más críticos. | Una base técnica sólida que reduzca incertidumbre. |
+| **Construcción** | Se desarrolla el sistema por iteraciones y se agrega funcionalidad priorizada. | Un producto ejecutable, completo y probado incrementalmente. |
+| **Transición** | Se libera el sistema, se corrigen detalles y se valida con usuarios reales. | Aceptación, capacitación y paso a producción. |
 
 ### Scrum, historias de usuario y backlog
 

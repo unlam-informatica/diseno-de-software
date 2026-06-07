@@ -59,12 +59,12 @@ Modelos importantes:
 
 ## RUP en pocas palabras
 
-RUP tiene cuatro fases:
+RUP tiene cuatro fases y una idea central: **desarrollar en iteraciones, priorizar los casos de uso más valiosos y reducir temprano los riesgos arquitectónicos**.
 
 1. **Inicio**: alcance, visión, riesgos, caso de negocio.
-2. **Elaboración**: arquitectura base, dominio, requisitos principales.
-3. **Construcción**: desarrollo incremental del producto.
-4. **Transición**: entrega, aceptación, capacitación, ajustes.
+2. **Elaboración**: arquitectura base, dominio, requisitos principales, validación técnica.
+3. **Construcción**: desarrollo incremental del producto con iteraciones ejecutables.
+4. **Transición**: entrega, aceptación, capacitación y ajustes finales.
 
 Características:
 
