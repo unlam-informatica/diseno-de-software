@@ -50,29 +50,49 @@
     }
   }
 
-  function getSvgBaseWidth(svg) {
+  function getSvgBaseSize(svg) {
     var viewBox = svg.viewBox && svg.viewBox.baseVal;
 
-    if (viewBox && viewBox.width) {
-      return viewBox.width;
+    if (viewBox && viewBox.width && viewBox.height) {
+      return {
+        width: viewBox.width,
+        height: viewBox.height
+      };
     }
 
     var rect = svg.getBoundingClientRect();
-    if (rect && rect.width) {
-      return rect.width;
+    if (rect && rect.width && rect.height) {
+      return {
+        width: rect.width,
+        height: rect.height
+      };
     }
 
-    return 900;
+    return {
+      width: 900,
+      height: 600
+    };
+  }
+
+  function getStageFitWidth(svg) {
+    var size = getSvgBaseSize(svg);
+    var aspectRatio = size.width / size.height;
+    var panelWidth = Math.min(window.innerWidth * 0.96, 1180);
+    var panelHeight = Math.min(window.innerHeight * 0.92, 900);
+    var availableWidth = Math.max(panelWidth - 32, 320);
+    var availableHeight = Math.max(panelHeight - 64, 240);
+
+    return Math.floor(Math.min(availableWidth, availableHeight * aspectRatio));
   }
 
   function openModal(svg) {
     createModal();
 
     var clone = svg.cloneNode(true);
-    var width = Math.min(Math.round(getSvgBaseWidth(svg) * 1.35), 2400);
+    var width = getStageFitWidth(svg);
 
     clone.removeAttribute('height');
-    clone.style.width = 'max(100%, ' + width + 'px)';
+    clone.style.width = width + 'px';
     clone.style.height = 'auto';
     clone.style.maxWidth = 'none';
     clone.style.display = 'block';
