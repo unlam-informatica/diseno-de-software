@@ -21,5 +21,7 @@ Relación entre **especificación de requisitos** y diseño, y las distintas **t
 
 ## Bibliografía
 
-- Sommerville, *Software Engineering* (10.ª), arquitectura y sistemas distribuidos/servicios.
-- Pressman & Maxim, *Software Engineering* (9.ª), diseño arquitectónico y WebApps.
+- **Principal:** Larman, *UML y patrones* — responsabilidades, bajo acoplamiento y alta cohesión aplicados al refinamiento.
+- **Principal:** GoF, *Design Patterns* — patrones como vocabulario para decisiones de diseño detallado.
+- **Consulta:** Sommerville, *Software Engineering* (10.ª), arquitectura y sistemas distribuidos/servicios.
+- **Consulta:** Pressman & Maxim, *Software Engineering* (9.ª), diseño arquitectónico y WebApps.

@@ -22,7 +22,17 @@ En esta unidad estudiamos:
 - **Topologías emergentes**: serverless, cloud-native, edge, contenedores.
 
 {: .note }
-> Bibliografía de referencia: **Sommerville**, *Software Engineering* (10ª ed.) — diseño arquitectónico, sistemas distribuidos e ingeniería de software orientada a servicios; y **Pressman & Maxim**, *Software Engineering: A Practitioner's Approach* — diseño arquitectónico y diseño de WebApps.
+> **Bibliografía prioritaria de la materia.** **Larman** ayuda a razonar la transición de requisitos a responsabilidades de software, bajo acoplamiento y alta cohesión. **GoF** aporta el vocabulario de patrones cuando el diseño detallado necesita resolver variaciones concretas. Para esta unidad, **Sommerville** y **Pressman & Maxim** se usan como apoyo principal en requisitos, arquitectura, WebApps, SOA y topologías.
+
+```mermaid
+flowchart LR
+    R["Requisitos<br/>RF + RNF"] --> T["Trazabilidad"]
+    T --> A["Arquitectura<br/>estilos y topologia"]
+    A --> D["Diseno detallado<br/>componentes, clases, interfaces"]
+    D --> P["Patrones y responsabilidades<br/>GRASP / GoF cuando aplica"]
+```
+
+La idea central de la unidad es que el diseño no es una actividad aislada: traduce requisitos en decisiones arquitectónicas y luego en componentes concretos.
 
 ## Especificación de requisitos
 
@@ -74,6 +84,16 @@ Una **matriz de trazabilidad** vincula requisitos con elementos de diseño, caso
 {: .note }
 > Idea clave para el parcial: el diseño es la **realización** de la especificación. Los RNF (especialmente los de producto) condicionan la arquitectura; los RF se traducen en componentes, módulos y operaciones.
 
+Ejemplo mínimo de trazabilidad:
+
+| Requisito | Decisión de diseño | Componente afectado | Prueba asociada |
+|---|---|---|---|
+| RF-01: buscar productos por texto y categoría. | API de búsqueda + capa de acceso a datos indexada. | `CatalogoController`, `ServicioBusqueda`, repositorio. | Buscar por nombre, categoría y combinación. |
+| RNF-01: respuesta menor a 2 s con 1000 usuarios. | Caché, paginación y escalado horizontal. | API, caché, base de datos. | Prueba de carga. |
+| RNF-02: solo usuarios autenticados compran. | Autenticación y autorización centralizadas. | gateway/API, módulo de usuarios. | Pruebas de acceso permitido/denegado. |
+
+Esta tabla muestra por qué los RNF suelen empujar decisiones de arquitectura, mientras que los RF suelen refinarse hacia operaciones y colaboraciones.
+
 ## Refinamiento del diseño
 
 El **refinamiento** es un proceso de **descomposición sucesiva**: se parte de una descripción de alto nivel y se la elabora en niveles cada vez más detallados, decidiendo en cada paso *cómo* se realiza lo que el nivel anterior dejó *abstracto*. Es complementario de la **abstracción**: mientras la abstracción oculta detalle, el refinamiento lo revela.
@@ -87,6 +107,17 @@ El proceso de diseño arquitectónico de Sommerville implica decisiones sobre: *
 
 {: .note }
 > Buenos atributos del diseño que guían el refinamiento: **modularidad**, **encapsulamiento**, **bajo acoplamiento** (componentes poco dependientes entre sí) y **alta cohesión** (cada componente con una responsabilidad bien definida).
+
+```mermaid
+flowchart TB
+    A["Diseno arquitectonico"] --> B["Subsistemas"]
+    B --> C["Componentes"]
+    C --> D["Interfaces"]
+    D --> E["Clases / modulos"]
+    E --> F["Metodos, algoritmos y estructuras de datos"]
+```
+
+Visto desde Larman, el refinamiento también es una sucesión de asignaciones de responsabilidad: primero entre subsistemas, luego entre componentes y finalmente entre objetos o módulos.
 
 ## Topologías de diseño
 
@@ -147,6 +178,13 @@ El estilo dominante es la organización **en capas (n-tier)**:
 
 La separación en capas permite escalar y mantener cada nivel de forma independiente.
 
+```mermaid
+flowchart TB
+    N["Navegador / cliente"] --> P["Presentacion"]
+    P --> A["API / aplicacion"]
+    A --> D["Datos"]
+```
+
 ### HTTP sin estado (stateless)
 
 HTTP es **stateless**: cada petición es independiente y el servidor no recuerda peticiones previas. El estado entre solicitudes se gestiona con mecanismos como **cookies, tokens (JWT) y sesiones**. Esta naturaleza sin estado **favorece la escalabilidad horizontal** (cualquier servidor puede atender cualquier petición).
@@ -206,6 +244,13 @@ Predominan patrones que **separan la UI de la lógica** para facilitar pruebas y
 - **MVVM (Model-View-ViewModel):** la *View* (UI) se enlaza (*data binding*) a un *ViewModel* que expone el estado, y el *Model* contiene los datos/negocio. Muy usado en Android (Jetpack) e iOS.
 - También se aplican **MVC** y **MVP**, y por debajo es habitual una **arquitectura en capas** (presentación, dominio, datos) con consumo de **APIs REST**.
 
+```mermaid
+flowchart LR
+    V["View<br/>pantalla"] <--> VM["ViewModel<br/>estado y acciones"]
+    VM --> D["Dominio<br/>casos de uso"]
+    D --> R["Datos<br/>repositorios / API / cache"]
+```
+
 ## Patrones y estilos arquitectónicos (Sommerville / Pressman)
 
 Un **estilo (o patrón) arquitectónico** es una organización estructural recurrente, con sus ventajas, desventajas y contextos de aplicación. Sommerville describe varios estilos fundamentales:
@@ -237,6 +282,19 @@ Los datos fluyen a través de una secuencia de **filtros** (transformaciones) co
 | **MVC** | Múltiples vistas; desacople UI/lógica | Complejidad adicional para casos simples | UIs con datos que cambian y varias representaciones |
 | **Repositorio** | Datos compartidos consistentes y centralizados | El repositorio es cuello de botella y punto de falla | Grandes volúmenes de datos compartidos |
 | **Tubería-filtros** | Reutilización de filtros; fácil de extender | Mal ajuste para interacción; sobrecarga de transformación de datos | Procesamiento secuencial de datos / por lotes |
+
+### Cómo elegir una topología
+
+| Si predomina... | Topología o estilo candidato | Razón de diseño |
+|---|---|---|
+| Uso local, baja latencia y trabajo offline. | Escritorio en capas. | Aprovecha recursos locales y separa UI, negocio y datos. |
+| Acceso multiplataforma y actualización centralizada. | Web cliente-servidor / n capas. | Centraliza despliegue y permite escalar servidores. |
+| Conectividad variable y sensores del dispositivo. | Móvil con capas + sincronización offline. | Aísla UI, dominio y datos remotos/locales. |
+| Integración empresarial entre sistemas heterogéneos. | SOA. | Contratos de servicio e integración mediante infraestructura común. |
+| Despliegue independiente por capacidad de negocio. | Microservicios. | Bajo acoplamiento operativo y escalado por servicio. |
+| Procesos asincrónicos y picos de carga. | Event-driven. | Productores y consumidores desacoplados por eventos. |
+| Carga intermitente o disparada por eventos. | Serverless/FaaS. | Escalado bajo demanda y menor administración de servidores. |
+| Baja latencia cerca del origen de datos. | Edge computing. | Procesamiento próximo al dispositivo o usuario. |
 
 ## Arquitectura Orientada a Servicios (SOA)
 
@@ -290,6 +348,22 @@ En una **arquitectura dirigida por eventos** (*event-driven architecture*, EDA),
 
 **Desafíos:** flujo difícil de seguir/depurar, consistencia eventual, garantías de entrega y orden de eventos. Suele combinarse con microservicios.
 
+```mermaid
+sequenceDiagram
+    participant Pedido as Servicio Pedidos
+    participant Broker
+    participant Stock as Servicio Stock
+    participant Mail as Servicio Notificaciones
+
+    Pedido->>Broker: publica PedidoCreado
+    Broker-->>Stock: entrega PedidoCreado
+    Broker-->>Mail: entrega PedidoCreado
+    Stock->>Broker: publica StockReservado
+    Broker-->>Pedido: entrega StockReservado
+```
+
+La diferencia con una llamada directa es que `Servicio Pedidos` no conoce a todos los consumidores. Publica un hecho ocurrido y otros componentes reaccionan.
+
 ## Topologías emergentes
 
 Tendencias actuales que extienden o reemplazan las topologías clásicas, fuertemente ligadas a la **nube (cloud)**:
@@ -315,3 +389,16 @@ Tendencias actuales que extienden o reemplazan las topologías clásicas, fuerte
 - **SOA:** servicios con contrato + **ESB** central; **microservicios:** servicios pequeños, independientes, sin ESB, una BD por servicio.
 - **Event-driven:** productores/consumidores, **brokers**, **pub/sub**, **event sourcing**; aporta desacople y escalabilidad.
 - **Topologías emergentes:** **serverless/FaaS**, **cloud-native**, **edge** y **contenedores**, orientadas a escalabilidad elástica y despliegue independiente.
+
+### Cobertura del programa de la unidad 4
+
+| Tema indicado en el programa.pdf | Dónde aparece en estos apuntes |
+|---|---|
+| Diseño, refinamiento y especificación | Introducción; especificación; refinamiento del diseño |
+| Especificaciones de requisitos y relación con diseño | SRS; trazabilidad; matriz de trazabilidad |
+| Topologías de diseño | Sección "Topologías de diseño" y guía de elección |
+| Diseño de sistemas Web | Modelo n capas; HTTP; REST; SSR/CSR/SPA; herramientas |
+| Diseño de sistemas Móvil | Características, tipos de app y arquitectura móvil |
+| Diseño de sistemas de Escritorio | Arquitecturas y tabla de ventajas/limitaciones |
+| Topologías emergentes | Serverless, cloud-native, edge y contenedores |
+| Arquitectura Web, SOA y basadas en eventos | Secciones Web, SOA/microservicios y event-driven |

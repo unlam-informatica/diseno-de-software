@@ -14,6 +14,9 @@ Esta unidad estudia el **diseño de la interfaz hombre-computadora** (HCI, *Huma
 {: .note }
 > La interfaz no es "la última capa que se pinta al final". Es una decisión de diseño que debe planificarse, prototiparse y evaluarse de forma iterativa, con participación del usuario real.
 
+{: .note }
+> **Bibliografía prioritaria de la materia.** En esta unidad **Pressman & Maxim** y material de HCI/usabilidad se usan como apoyo específico. **Larman** aporta el criterio de responsabilidades y separación entre UI, controladores y dominio; **GoF** aparece cuando los patrones ayudan a desacoplar interfaz, estado y comportamiento, por ejemplo MVC, Observer, Strategy o Command.
+
 ## Interfaz Hombre-Computadora (HCI / IHC)
 
 La **Interacción Hombre-Computadora (HCI)** es la disciplina que estudia el diseño, la evaluación y la implementación de sistemas informáticos interactivos para uso humano, y los fenómenos que rodean a ese uso. Es un campo **multidisciplinario** que combina:
@@ -58,6 +61,17 @@ Dos términos que suelen confundirse pero designan cosas distintas y complementa
 {: .note }
 > La UI es una **parte** de la UX. Una UI bonita con una UX mala (flujos confusos, lentitud, no resuelve la necesidad) fracasa; una UX bien pensada con UI pobre tampoco convence. Se necesitan ambas.
 
+```mermaid
+flowchart LR
+    U["Necesidad del usuario"] --> UX["UX<br/>flujo, objetivo, esfuerzo, confianza"]
+    UX --> UI["UI<br/>pantallas, controles, textos, feedback"]
+    UI --> R["Resultado<br/>tarea completada o abandonada"]
+    R --> E["Evaluacion<br/>metricas y feedback"]
+    E --> UX
+```
+
+La evaluación cierra el ciclo: no alcanza con diseñar una pantalla, hay que verificar si el usuario logra su objetivo con eficacia, eficiencia y satisfacción.
+
 ### Componentes de la UX (panal de Morville)
 
 Para que una experiencia sea valiosa, debe ser:
@@ -69,6 +83,8 @@ Para que una experiencia sea valiosa, debe ser:
 - **Accesible (accessible):** utilizable por personas con discapacidades.
 - **Creíble (credible):** transmite confianza; el usuario cree en lo que ofrece.
 - **Valiosa (valuable):** aporta valor al usuario y al negocio.
+
+Ejemplo aplicado: en un sistema de turnos médicos, la experiencia es **útil** si permite obtener un turno real, **usable** si se reserva en pocos pasos, **encontrable** si el profesional se localiza rápido, **accesible** si puede usarla una persona con baja visión, **creíble** si muestra datos claros de clínica y cobertura, y **valiosa** si reduce llamadas y esperas.
 
 ## Usabilidad
 
@@ -201,6 +217,13 @@ El **diseño de contenidos** organiza la información para que sea fácil de lee
 - **Validación** clara, en el momento adecuado, con mensajes que expliquen cómo corregir (prevención y recuperación de errores).
 - Valores por defecto sensatos, formatos de entrada flexibles, y confirmación de éxito.
 
+| Componente | Riesgo común | Buen criterio de diseño |
+|---|---|---|
+| Menú | Demasiados niveles o etiquetas ambiguas. | Agrupar por tareas del usuario y mantener poca profundidad. |
+| Ícono | Metáfora poco reconocible. | Usar convenciones y agregar texto si hay duda. |
+| Tabla | Exceso de columnas sin jerarquía. | Priorizar columnas clave, permitir ordenar/filtrar. |
+| Formulario | Pedir datos innecesarios o validar tarde. | Reducir campos, validar cerca del campo y explicar la corrección. |
+
 ## Proceso de diseño de interfaces
 
 El diseño de la interfaz es un **proceso iterativo** (espiral): se diseña, se prototipa, se evalúa con usuarios y se refina. Pressman/Sommerville lo describen en cuatro actividades principales:
@@ -242,6 +265,17 @@ Etapas iterativas típicas:
 {: .important }
 > Diferencia clave del DCU: el usuario no es un sujeto pasivo al que se le "entrega" un producto, sino un **participante activo** que valida y orienta el diseño desde el inicio.
 
+```mermaid
+flowchart LR
+    A["Contexto de uso"] --> B["Requisitos de usuario"]
+    B --> C["Soluciones de diseno"]
+    C --> D["Evaluacion con usuarios"]
+    D -->|cumple| E["Diseno validado"]
+    D -->|no cumple| A
+```
+
+En términos de ingeniería de software, DCU agrega trazabilidad desde necesidades reales del usuario hacia decisiones de interfaz y pruebas de usabilidad.
+
 ## Diseño de la interacción (interaction design)
 
 El **diseño de la interacción (IxD)** se ocupa de **cómo dialogan** el usuario y el sistema: las acciones, las respuestas y el flujo entre ambos. Conceptos centrales:
@@ -255,6 +289,20 @@ El **diseño de la interacción (IxD)** se ocupa de **cómo dialogan** el usuari
 
 {: .note }
 > Norman: un buen diseño hace **visibles** las acciones posibles y provee **feedback** claro. Cuando algo "se usa solo", es porque sus affordances y su mapeo son correctos.
+
+### Relación con patrones de diseño
+
+Varios patrones estudiados en la unidad 3 aparecen naturalmente en interfaces:
+
+| Problema de interacción | Patrón útil | Idea |
+|---|---|---|
+| La vista debe actualizarse cuando cambia el estado. | **Observer** | El modelo notifica a las vistas suscriptas. |
+| Un botón, menú o atajo ejecuta una acción reusable. | **Command** | La acción se encapsula como objeto/comando. |
+| Hay distintas formas de ordenar, filtrar o validar. | **Strategy** | El algoritmo cambia sin modificar la pantalla. |
+| Una pantalla contiene componentes anidados. | **Composite** | Tratar elementos simples y compuestos de forma uniforme. |
+| Separar datos, presentación e interacción. | **MVC/MVVM** | Reducir acoplamiento entre UI y lógica de negocio. |
+
+Estos patrones no se aplican por estética: se usan cuando reducen acoplamiento, protegen variaciones y hacen más mantenible la interfaz.
 
 ## Interfaces entre procesos, seguridad y control de tráfico
 
@@ -296,6 +344,20 @@ Los sistemas de **comercio electrónico** son un caso paradigmático donde la ca
 - **Rendimiento:** la velocidad de carga influye fuerte en ventas y en SEO.
 - **Accesibilidad y responsive:** funcionar bien en móviles y para todos los usuarios.
 
+```mermaid
+flowchart LR
+    A["Descubre producto"] --> B["Evalua ficha"]
+    B --> C["Agrega al carrito"]
+    C --> D["Checkout"]
+    D --> E["Pago"]
+    E --> F["Confirmacion"]
+    B -. abandono .-> X["Sale del sitio"]
+    D -. friccion .-> X
+    E -. desconfianza .-> X
+```
+
+Cada transición del embudo debe diseñarse para reducir incertidumbre: precio claro, disponibilidad, costos de envío, medios de pago, seguridad y confirmación.
+
 ### Seguridad en e-commerce
 
 - **Cifrado** de la comunicación (HTTPS/TLS) y de datos sensibles.
@@ -319,3 +381,21 @@ Los sistemas de **comercio electrónico** son un caso paradigmático donde la ca
 - **Diseño de interacción:** affordances, feedback, mapeo, restricciones, patrones.
 - **Interfaces entre procesos:** contratos/APIs bien definidos, seguridad (CIA, autenticación, cifrado) y control de tráfico (rate limiting, colas, backpressure).
 - **E-commerce:** catálogo, carrito, checkout sin fricción, confianza, conversión y seguridad (PCI-DSS, HTTPS) son lo determinante.
+
+### Cobertura del programa de la unidad 6
+
+| Tema indicado en el programa.pdf | Dónde aparece en estos apuntes |
+|---|---|
+| Interfaz Hombre-Computadora | Introducción; HCI/IHC |
+| UX vs UI | Sección "UX vs UI" y mapa conceptual |
+| Interfaces del usuario | Modelo de comunicación; diseño de componentes |
+| Principios de las interfaces | Reglas de oro de Pressman; heurísticas de Nielsen |
+| Simplicidad de acceso | Sección "Simplicidad de acceso y accesibilidad" |
+| Diseño de contenidos | Arquitectura de información, jerarquía, legibilidad |
+| Diseño de interfaces del usuario | Componentes, proceso de diseño, interacción |
+| Simplicidad, características, menús, íconos, tablas | Sección de componentes y tabla de riesgos |
+| Proceso de diseño de interfaces | Proceso iterativo; prototipado y evaluación |
+| Interfaces entre procesos, seguridad y control de tráfico | Sección específica de APIs, seguridad y tráfico |
+| Sistemas de comercio electrónico | E-commerce, checkout, confianza y seguridad |
+| Diseño centrado en el usuario | DCU / ISO 9241-210 |
+| Diseño de la interacción hombre-máquina | Affordances, feedback, mapeo, restricciones y patrones |

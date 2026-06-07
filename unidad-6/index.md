@@ -21,5 +21,7 @@ Diseño de la **interacción entre el usuario y el sistema**: la distinción ent
 
 ## Bibliografía
 
-- Pressman & Maxim, *Software Engineering* (9.ª), diseño de la interfaz de usuario.
-- Sommerville, *Software Engineering* (10.ª), aspectos de usabilidad e interacción.
+- **Principal:** Larman, *UML y patrones* — separación de responsabilidades entre UI, controladores, dominio y servicios.
+- **Principal:** GoF, *Design Patterns* — MVC, Observer, Command, Strategy y otros patrones útiles en interfaces.
+- **Consulta:** Pressman & Maxim, *Software Engineering* (9.ª), diseño de la interfaz de usuario.
+- **Consulta:** Sommerville, *Software Engineering* (10.ª), aspectos de usabilidad e interacción.

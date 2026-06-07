@@ -16,6 +16,9 @@ Estos sistemas suelen ser **reactivos** y **embebidos** (*embedded*): están int
 
 En esta unidad estudiamos qué define a estos sistemas, cómo se clasifican según la severidad de sus restricciones temporales, cuál es su arquitectura típica (sensores, sistema, actuadores y núcleo de tiempo real), cómo se organizan en tareas concurrentes que se sincronizan y comunican, cómo se planifican esas tareas para cumplir los plazos, y finalmente cómo se modela formalmente su comportamiento concurrente mediante **redes de Petri**.
 
+{: .note }
+> **Bibliografía prioritaria de la materia.** En esta unidad el núcleo conceptual proviene de sistemas de tiempo real y concurrencia, por lo que **Sommerville** y **Pressman & Maxim** se usan como apoyo específico. **Larman** sigue siendo útil para asignar responsabilidades a tareas/componentes con bajo acoplamiento, y **GoF** puede aparecer como vocabulario de diseño cuando haya que desacoplar productores, consumidores o fuentes de eventos.
+
 ## Concepto de sistema de tiempo real
 
 Un sistema de tiempo real es un sistema de software (habitualmente embebido) que **monitorea y/o controla su entorno** mediante sensores y actuadores, y que debe responder a estímulos externos dentro de plazos finitos y conocidos.
@@ -35,6 +38,22 @@ Características distintivas:
 
 - **Sistema reactivo:** mantiene una interacción continua con su entorno, respondiendo a un flujo de eventos en lugar de calcular una salida a partir de una entrada y terminar.
 - **Sistema embebido:** software alojado dentro de un hardware específico (microcontrolador, ECU automotriz, dispositivo médico) que forma parte de un producto mayor. La gran mayoría de los sistemas de tiempo real son embebidos.
+
+```mermaid
+sequenceDiagram
+    participant Entorno
+    participant Sensor
+    participant TareaControl
+    participant Actuador
+
+    Entorno->>Sensor: estimulo fisico
+    Sensor->>TareaControl: evento / dato
+    TareaControl->>TareaControl: calcula respuesta antes del deadline
+    TareaControl->>Actuador: orden de accion
+    Actuador-->>Entorno: efecto fisico
+```
+
+El ciclo no termina como en un programa por lotes: se repite continuamente y cada vuelta tiene restricciones temporales.
 
 ## Tiempo real duro, blando y firme
 
@@ -70,12 +89,21 @@ Las propiedades temporales que deben especificarse y respetarse:
 {: .note }
 > El **WCET** es el parámetro más importante para razonar sobre tiempo real duro: si no se conoce el peor caso, no se puede garantizar ningún plazo.
 
+Ejemplo simple:
+
+| Tarea | WCET C | Período T | Deadline D | Utilización C/T |
+|---|---:|---:|---:|---:|
+| Leer sensor | 1 ms | 10 ms | 10 ms | 0,10 |
+| Calcular control | 2 ms | 20 ms | 20 ms | 0,10 |
+| Actualizar actuador | 1 ms | 20 ms | 20 ms | 0,05 |
+
+La utilización total es 0,25. Esto no prueba por sí solo todo el comportamiento, pero permite iniciar el análisis de planificabilidad.
+
 ## Arquitectura de un sistema de tiempo real
 
 El modelo de referencia es el **sensor–sistema–actuador**, basado en el ciclo estímulo/respuesta:
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 flowchart LR
     E1([Entorno físico]) -->|estímulo| S["Sensores<br/>(entrada)"]
     S --> C["Sistema de control / núcleo<br/>(procesos + RTOS)"]
@@ -122,6 +150,12 @@ El software de tiempo real se estructura como un conjunto de **tareas** (tambié
 - **Tareas aperiódicas:** se activan en respuesta a eventos que ocurren en instantes impredecibles (una alarma, una pulsación). No tienen período fijo.
 - **Tareas esporádicas:** un caso de aperiódicas con un **tiempo mínimo garantizado entre activaciones** (*minimum inter-arrival time*), lo que permite acotarlas para el análisis.
 
+| Tipo de tarea | Activación | Se puede analizar con período fijo | Ejemplo |
+|---|---|---|---|
+| Periódica | Cada T unidades de tiempo. | Sí. | Muestreo de temperatura cada 100 ms. |
+| Aperiódica | Evento impredecible. | No directamente. | Botón de emergencia sin frecuencia acotada. |
+| Esporádica | Evento impredecible, pero con separación mínima. | Sí, usando el mínimo entre llegadas. | Alarma que no puede repetirse antes de 500 ms. |
+
 ### Estados de una tarea
 
 Una tarea atraviesa estados gestionados por el planificador:
@@ -132,7 +166,6 @@ Una tarea atraviesa estados gestionados por el planificador:
 - **Suspendida / Dormida (suspended):** inactiva hasta su próxima activación (típico de tareas periódicas entre períodos).
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 stateDiagram-v2
     [*] --> Ready
     Ready --> Running: despacho
@@ -218,6 +251,26 @@ U = Σ (Cᵢ / Tᵢ)  ≤  1   (100 %)
 {: .note }
 > Regla práctica: **RM** cuando se prioriza simplicidad y predecibilidad; **EDF** cuando se busca exprimir al máximo la CPU. RM nunca supera ~69 % garantizado; EDF llega al 100 %.
 
+Ejemplo de cálculo de utilización para RM:
+
+| Tarea | C | T | C/T |
+|---|---:|---:|---:|
+| T1 | 1 | 4 | 0,25 |
+| T2 | 1 | 5 | 0,20 |
+| T3 | 2 | 20 | 0,10 |
+| **Total** |  |  | **0,55** |
+
+Para 3 tareas, la cota suficiente de RM es `3 * (2^(1/3) - 1) ≈ 0,779`. Como `0,55 <= 0,779`, este conjunto pasa el test suficiente de planificabilidad RM.
+
+```mermaid
+flowchart LR
+    A["Tareas con C, T y D"] --> B{"Prioridad fija o dinamica?"}
+    B -- "Fija" --> RM["Rate Monotonic<br/>menor periodo = mayor prioridad"]
+    B -- "Dinamica" --> EDF["Earliest Deadline First<br/>deadline mas cercano"]
+    RM --> V["Verificar utilizacion y tiempos de respuesta"]
+    EDF --> V
+```
+
 ## Paso de mensajes e interfaces entre tareas
 
 Las tareas se comunican principalmente de dos formas:
@@ -253,6 +306,22 @@ Los eventos externos (estímulos) llegan de forma asíncrona y deben capturarse 
 {: .note }
 > Regla de oro de los ISR: **hacer lo mínimo indispensable** dentro de la interrupción (leer el dato, encolarlo, señalizar una tarea) y delegar el procesamiento a una tarea planificable, para mantener acotada la latencia.
 
+```mermaid
+sequenceDiagram
+    participant Hardware
+    participant ISR
+    participant Cola as Cola de eventos
+    participant Tarea as Tarea planificable
+
+    Hardware->>ISR: interrupcion
+    ISR->>Cola: encola evento
+    ISR-->>Hardware: retorna rapido
+    Tarea->>Cola: desencola evento
+    Tarea->>Tarea: procesa con WCET conocido
+```
+
+La separación entre ISR corto y tarea planificable mejora la predecibilidad: la interrupción captura el evento, pero el trabajo pesado queda bajo control del planificador.
+
 ## Redes de Petri para sistemas de tiempo real
 
 Las **redes de Petri** son un formalismo gráfico y matemático para modelar, analizar y verificar **sistemas concurrentes**, capturando con precisión la **sincronización**, la **concurrencia** y la **exclusión mutua**. Son muy útiles en tiempo real para razonar sobre el comportamiento del sistema antes de implementarlo y detectar problemas como interbloqueos.
@@ -285,7 +354,6 @@ Con estas reglas se modelan patrones fundamentales:
 Dos tareas (T1 y T2) deben acceder a un recurso compartido en exclusión mutua. Un lugar **Mutex** contiene **1 token** que representa el cerrojo disponible:
 
 ```mermaid
-%%{init: {'theme':'dark'}}%%
 flowchart TB
     P1((P1_listo)) --> T1[tomar_1]
     P2((P2_listo)) --> T2[tomar_2]
@@ -337,3 +405,17 @@ Para sistemas de **tiempo real** se usan extensiones que incorporan el tiempo:
 - **Comunicación** por memoria compartida o **paso de mensajes** (síncrono/asíncrono) con **colas y buffers** (productor-consumidor).
 - **Eventos:** **interrupciones** atendidas por **ISR cortos**, **colas de eventos** y **buffering** para no perder estímulos; minimizar la latencia.
 - **Redes de Petri:** **lugares, transiciones, arcos y tokens**; la **regla de disparo** (habilitación → consume/produce tokens) modela **concurrencia, sincronización y exclusión mutua**, y con extensiones temporizadas permite verificar plazos y ausencia de deadlock.
+
+### Cobertura del programa de la unidad 5
+
+| Tema indicado en el programa.pdf | Dónde aparece en estos apuntes |
+|---|---|
+| Diseño de sistemas de tiempo real | Introducción; concepto de sistema de tiempo real |
+| Arquitectura de tiempo real | Sensor-sistema-actuador; núcleo/RTOS |
+| Sensores, actuadores y administrador o núcleo | Arquitectura; componentes; RTOS |
+| Conceptos de tareas | Modelo de tareas; tipos y estados |
+| Mecanismos de sincronización y ejecución | Mutex, semáforos, monitores; planificación |
+| Paso de mensajes e interfaces | Comunicación entre tareas; colas, buffers, mailbox |
+| Asignación de prioridades | RM, EDF, prioridad estática/dinámica |
+| Mecanismos de almacenamiento de eventos | Interrupciones, ISR, colas de eventos, buffering |
+| Redes de Petri para sistemas en tiempo real | Elementos, disparo, exclusión mutua y extensiones temporizadas |

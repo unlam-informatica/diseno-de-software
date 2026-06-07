@@ -21,5 +21,7 @@ Diseño de **sistemas de tiempo real**: su arquitectura característica (**senso
 
 ## Bibliografía
 
-- Sommerville, *Software Engineering* (10.ª), ingeniería de sistemas embebidos/tiempo real.
-- Pressman & Maxim, *Software Engineering* (9.ª).
+- **Principal:** Larman, *UML y patrones* — responsabilidades, colaboración y bajo acoplamiento al organizar tareas/componentes.
+- **Principal:** GoF, *Design Patterns* — patrones útiles para desacoplar eventos, acciones y colaboradores cuando aplique.
+- **Consulta:** Sommerville, *Software Engineering* (10.ª), ingeniería de sistemas embebidos/tiempo real.
+- **Consulta:** Pressman & Maxim, *Software Engineering* (9.ª).
