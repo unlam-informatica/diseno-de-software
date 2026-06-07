@@ -116,7 +116,8 @@ body {
 // Acá solo damos aire, borde y scroll horizontal al bloque renderizado.
 
 .main-content {
-  .mermaid {
+  .mermaid,
+  pre:has(> code.language-mermaid) {
     display: block;
     margin: 1.25rem 0;
     padding: 1rem;
@@ -126,7 +127,14 @@ body {
     border-radius: 6px;
   }
 
-  .mermaid svg {
+  code.language-mermaid {
+    display: block;
+    padding: 0;
+    background: transparent;
+  }
+
+  .mermaid svg,
+  .language-mermaid svg {
     display: block;
     max-width: 100%;
     height: auto;

@@ -11,6 +11,13 @@ color_scheme: unlam
 search_enabled: true
 heading_anchors: true
 
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: default
+
 callouts_level: quiet
 callouts:
   note:

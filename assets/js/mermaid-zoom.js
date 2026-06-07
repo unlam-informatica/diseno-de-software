@@ -87,7 +87,9 @@
   }
 
   function bindMermaidSvgs() {
-    var svgs = document.querySelectorAll('.main-content .mermaid svg');
+    var svgs = document.querySelectorAll(
+      '.main-content .mermaid svg, .main-content .language-mermaid svg'
+    );
 
     svgs.forEach(function (svg) {
       if (svg.dataset.mermaidZoomBound === 'true') return;
@@ -114,7 +116,7 @@
 
   function closestMermaidSvg(target) {
     if (!target || typeof target.closest !== 'function') return null;
-    return target.closest('.main-content .mermaid svg');
+    return target.closest('.main-content .mermaid svg, .main-content .language-mermaid svg');
   }
 
   function bindDelegatedEvents() {
