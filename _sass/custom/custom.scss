@@ -12,9 +12,9 @@
 
 body {
   color: var(--unlam-ink);
-  background:
-    linear-gradient(180deg, rgba(0, 107, 63, 0.055), rgba(255, 255, 255, 0) 28rem),
-    #f7faf8;
+  // Fondo casi blanco para lectura prolongada: reduce el tinte verde global y
+  // deja la identidad UNLaM como acento, no como superficie dominante.
+  background: #fdfdfb;
 }
 
 // ─── Contenido principal ─────────────────────────────────────────────────────
@@ -154,9 +154,7 @@ $callouts-acentos: (
 // ─── Sidebar nav ─────────────────────────────────────────────────────────────
 
 .side-bar {
-  background:
-    linear-gradient(180deg, rgba(0, 107, 63, 0.08), rgba(255, 255, 255, 0) 18rem),
-    #eef5f1;
+  background: #f8f9f8;
   border-right-color: var(--unlam-border);
 }
 
