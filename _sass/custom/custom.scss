@@ -1,5 +1,22 @@
 // custom.scss — se importa después del tema (reglas CSS adicionales).
 
+:root {
+  --unlam-green: #006b3f;
+  --unlam-green-dark: #004f30;
+  --unlam-yellow: #f3c300;
+  --unlam-ink: #17231d;
+  --unlam-muted: #5d6b64;
+  --unlam-surface: #ffffff;
+  --unlam-border: #d8e0dc;
+}
+
+body {
+  color: var(--unlam-ink);
+  background:
+    linear-gradient(180deg, rgba(0, 107, 63, 0.055), rgba(255, 255, 255, 0) 28rem),
+    #f7faf8;
+}
+
 // ─── Contenido principal ─────────────────────────────────────────────────────
 
 .main-content {
@@ -57,7 +74,9 @@
 
     thead th {
       font-weight: 600;
-      border-bottom: 2px solid rgba(121, 192, 255, 0.5);   // acento azul bajo el encabezado
+      color: var(--unlam-green-dark);
+      background: rgba(0, 107, 63, 0.035);
+      border-bottom: 2px solid rgba(0, 107, 63, 0.32);      // acento UNLaM bajo el encabezado
     }
 
     tbody tr {
@@ -65,7 +84,7 @@
     }
 
     tbody tr:hover {
-      background-color: rgba(121, 192, 255, 0.07);          // resalta la fila al pasar
+      background-color: rgba(0, 107, 63, 0.045);            // resalta la fila al pasar
     }
 
     tbody tr:last-child td {
@@ -89,8 +108,8 @@
     margin: 1.25rem 0;
     padding: 1rem;
     overflow-x: auto;
-    background: #fffef0;
-    border: 1px solid rgba(121, 192, 255, 0.25);
+    background: #fffef7;
+    border: 1px solid rgba(0, 107, 63, 0.18);
     border-radius: 6px;
   }
 
@@ -99,7 +118,7 @@
     max-width: 100%;
     height: auto;
     margin: 0 auto;
-    background: #fffef0;
+    background: #fffef7;
   }
 }
 
@@ -107,7 +126,7 @@
 //
 // Unificamos los cinco callouts con buenas prácticas de UX para admoniciones:
 //  • un acento de alto contraste por cada tipo,
-//  • hues bien diferenciados (azul / violeta / rojo / ámbar / teal) para que el
+//  • tonos diferenciados (azul / amarillo UNLaM / rojo / ámbar / teal) para que el
 //    tipo de callout se reconozca de un vistazo,
 //  • un fondo translúcido tenue (relleno suave) que separa el bloque del cuerpo
 //    sin "gritar".
@@ -115,7 +134,7 @@
 
 $callouts-acentos: (
   "note":       #0969da,  // Nota — azul info
-  "important":  #8250df,  // Importante — violeta
+  "important":  #8a6a00,  // Importante — amarillo UNLaM accesible
   "warning":    #cf222e,  // Atención — rojo
   "enunciado":  #9a6700,  // Enunciado — ámbar
   "resolucion": #0a7f72,  // Resolución — teal
@@ -134,9 +153,52 @@ $callouts-acentos: (
 
 // ─── Sidebar nav ─────────────────────────────────────────────────────────────
 
+.side-bar {
+  background:
+    linear-gradient(180deg, rgba(0, 107, 63, 0.08), rgba(255, 255, 255, 0) 18rem),
+    #eef5f1;
+  border-right-color: var(--unlam-border);
+}
+
+.site-title,
+.site-title:hover {
+  color: var(--unlam-green-dark);
+}
+
+.search-input {
+  background-color: var(--unlam-surface);
+  border-color: var(--unlam-border);
+
+  &:focus {
+    border-color: rgba(0, 107, 63, 0.55);
+    box-shadow: 0 0 0 3px rgba(0, 107, 63, 0.12);
+  }
+}
+
 .nav-list .nav-list-item .nav-list-link {
   font-size: 0.875rem;
   border-radius: 4px;
+
+  &:hover,
+  &.active {
+    color: var(--unlam-green-dark);
+    background: rgba(0, 107, 63, 0.075);
+  }
+}
+
+.main-header {
+  background-color: rgba(255, 255, 255, 0.92);
+  border-bottom-color: var(--unlam-border);
+}
+
+.breadcrumb-nav-list-item,
+.breadcrumb-nav-list-item a {
+  color: var(--unlam-muted);
+}
+
+.btn-primary {
+  background-color: var(--unlam-green);
+  background-image: linear-gradient(180deg, var(--unlam-green), var(--unlam-green-dark));
 }
 
 // ─── Override del layout expansivo de just-the-docs en pantallas anchas ──────

@@ -1,12 +1,12 @@
-// setup.scss — se importa antes del tema.
-// Sin overrides de la paleta light original de just-the-docs.
+// setup.scss — se importa antes de los estilos del tema.
+// La paleta principal vive en `_sass/color_schemes/unlam.scss`.
 
 // Colores extra para los callouts personalizados (`enunciado`, `resolucion`).
 // just-the-docs solo define red/yellow/green/blue/purple/grey; al usar
 // `color: amber`/`color: teal` en _config.yml el tema interpola
 // `$amber-000`/`$amber-300` y `$teal-000`/`$teal-300`, que hay que definir acá.
 //
-// El sitio usa `color_scheme: light` + `callouts_level: quiet`: el tono `-000`
+// El sitio usa `color_scheme: unlam` + `callouts_level: quiet`: el tono `-000`
 // aporta el fondo suave del callout y el `-300` se usa para título/borde.
 $amber-000: #fff8e1;
 $amber-100: #ffe082;

@@ -1,0 +1,47 @@
+// Color scheme oficial del sitio para just-the-docs.
+// Definido como esquema propio según la documentación del tema:
+// https://just-the-docs.com/docs/customization/#custom-schemes
+
+$color-scheme: light;
+
+$unlam-green: #006b3f;
+$unlam-green-dark: #004f30;
+$unlam-yellow: #f3c300;
+$unlam-ink: #17231d;
+$unlam-muted: #5d6b64;
+$unlam-surface: #ffffff;
+$unlam-page: #f7faf8;
+$unlam-border: #d8e0dc;
+$unlam-code: #f3f7f4;
+
+$body-background-color: $unlam-surface;
+$body-heading-color: $unlam-green-dark;
+$body-text-color: $unlam-ink;
+$link-color: $unlam-green;
+$nav-child-link-color: $unlam-muted;
+$sidebar-color: #eef5f1;
+$border-color: $unlam-border;
+$search-background-color: $unlam-surface;
+$table-background-color: $unlam-surface;
+$code-background-color: $unlam-code;
+$feedback-color: #edf4f0;
+$base-button-color: #eef5f1;
+$btn-primary-color: $unlam-green;
+
+// Colores del tema para utilidades/callouts basados en la identidad UNLaM.
+$green-000: #e8f4ee;
+$green-100: #cce5da;
+$green-200: #80b59f;
+$green-300: $unlam-green;
+
+// `note` usa `color: blue` en _config.yml; se conserva azul para
+// diferenciar notas informativas de la identidad principal UNLaM.
+$blue-000: #e8f1ff;
+$blue-100: #cfe0ff;
+$blue-200: #79a8e8;
+$blue-300: #0969da;
+
+$yellow-000: #fff8da;
+$yellow-100: #ffef9f;
+$yellow-200: #f7d84c;
+$yellow-300: #8a6a00;
