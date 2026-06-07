@@ -21,7 +21,7 @@ Un patrón no es un algoritmo ni un fragmento de código listo para copiar: es u
 En esta unidad veremos primero los **principios de diseño orientado a objetos** que sustentan los patrones, luego los **patrones GRASP** de asignación de responsabilidades (Larman), después el catálogo clásico de **patrones GoF** (creacionales, estructurales y de comportamiento), el patrón arquitectónico **MVC**, y finalmente los **antipatrones, code smells y mejores prácticas**.
 
 {: .note }
-> **Bibliografía base de la unidad.** GoF — Gamma, Helm, Johnson, Vlissides, *Design Patterns: Elements of Reusable Object-Oriented Software* (1994). Larman, *UML y Patrones* (2.ª/3.ª ed.) para GRASP y proceso de diseño. Pressman & Maxim, *Ingeniería del Software* para el encuadre general de diseño, patrones y arquitectura.
+> **Bibliografía prioritaria de la unidad.** **Larman** para GRASP, casos de uso, modelo de dominio y asignación de responsabilidades; **GoF** para patrones creacionales, estructurales y de comportamiento. Pressman & Maxim se usa como apoyo para el encuadre general de diseño, patrones y arquitectura.
 
 ## Qué es un patrón de diseño
 
@@ -58,6 +58,29 @@ Según los GoF, todo patrón se describe mediante cuatro elementos esenciales:
 {: .note }
 > No todo se resuelve con patrones. Aplicar un patrón donde no hace falta agrega complejidad innecesaria (esto es, de hecho, un antipatrón: *Golden Hammer*). El criterio es: usar el patrón cuando el problema que resuelve **realmente está presente** o se anticipa con fundamento.
 
+### Cómo se aplica un patrón en la práctica
+
+Aplicar un patrón no empieza por el diagrama, sino por el **problema de diseño**. Una secuencia razonable es:
+
+1. Identificar el punto de cambio o la responsabilidad difícil de ubicar.
+2. Evaluar el diseño actual con GRASP: ¿hay baja cohesión, alto acoplamiento o variación no protegida?
+3. Elegir un patrón cuyo problema coincida con el problema real.
+4. Adaptar la estructura del patrón al dominio propio.
+5. Revisar consecuencias: complejidad agregada, nuevas clases, impacto en pruebas y mantenibilidad.
+
+```mermaid
+flowchart LR
+    A["Problema de diseno"] --> B["Evaluar con GRASP"]
+    B --> C{"Hay variacion, acoplamiento o baja cohesion?"}
+    C -- "No" --> D["Mantener solucion simple"]
+    C -- "Si" --> E["Buscar patron aplicable"]
+    E --> F["Adaptar al dominio"]
+    F --> G["Revisar consecuencias"]
+```
+
+{: .note }
+> Un patrón GoF no reemplaza el razonamiento de diseño. GRASP ayuda a decidir **por qué** el patrón tiene sentido y **dónde** ubicar sus responsabilidades.
+
 ## Principios de diseño orientado a objetos
 
 Antes de los patrones conviene fijar los principios que los sustentan. Los patrones GoF son, en buena medida, aplicaciones de estos principios.
@@ -84,6 +107,30 @@ La herencia ata fuertemente la subclase a la superclase (acoplamiento en tiempo 
 
 {: .note }
 > Regla mnemotécnica de los GoF: *"Favor object composition over class inheritance."* La herencia describe *es-un* (relación de tipo); la composición describe *tiene-un* / *usa-un*.
+
+```mermaid
+classDiagram
+    class Contexto {
+        -estrategia: Estrategia
+        +ejecutar()
+    }
+    class Estrategia {
+        <<interface>>
+        +algoritmo()
+    }
+    class EstrategiaA {
+        +algoritmo()
+    }
+    class EstrategiaB {
+        +algoritmo()
+    }
+
+    Contexto --> Estrategia : delega
+    EstrategiaA ..|> Estrategia
+    EstrategiaB ..|> Estrategia
+```
+
+La composición permite cambiar el comportamiento reemplazando el objeto colaborador (`Estrategia`) sin modificar el cliente (`Contexto`).
 
 ### SOLID (mención)
 
@@ -161,6 +208,34 @@ Una **responsabilidad** es una obligación de un objeto: *de conocer* (saber dat
 {: .note }
 > GRASP responde **dónde** poner la responsabilidad; GoF ofrece **soluciones concretas** ya empaquetadas. Bajo Acoplamiento, Alta Cohesión y Variaciones Protegidas son los "principios sombrilla": casi todo patrón GoF puede explicarse como una forma de lograrlos.
 
+### Ejemplo integrador GRASP: registrar una venta
+
+```mermaid
+sequenceDiagram
+    actor Cajero
+    participant ControladorVenta
+    participant Venta
+    participant LineaDeVenta
+    participant Producto
+
+    Cajero->>ControladorVenta: registrarProducto(producto, cantidad)
+    ControladorVenta->>Venta: agregarLinea(producto, cantidad)
+    Venta->>LineaDeVenta: crear(producto, cantidad)
+    LineaDeVenta->>Producto: precio()
+    Producto-->>LineaDeVenta: precio
+    LineaDeVenta-->>Venta: subtotal
+```
+
+Lectura con GRASP:
+
+| Decisión | Patrón GRASP aplicado |
+|---|---|
+| `ControladorVenta` recibe el evento del sistema, no la UI. | **Controlador** |
+| `Venta` crea `LineaDeVenta` porque la contiene. | **Creador** |
+| `LineaDeVenta` calcula subtotal porque conoce cantidad y producto. | **Experto en Información** |
+| La UI no conoce detalles del dominio. | **Bajo Acoplamiento** |
+| Cada clase conserva responsabilidades relacionadas. | **Alta Cohesión** |
+
 ## Patrones GoF: clasificación
 
 Los GoF clasifican sus 23 patrones según dos criterios.
@@ -180,6 +255,21 @@ Los GoF clasifican sus 23 patrones según dos criterios.
 |---|---|---|---|
 | **Clase** | Factory Method | Adapter (de clase) | Interpreter, Template Method |
 | **Objeto** | Abstract Factory, Builder, Prototype, Singleton | Adapter (de objeto), Bridge, Composite, Decorator, Facade, Flyweight, Proxy | Chain of Responsibility, Command, Iterator, Mediator, Memento, Observer, State, Strategy, Visitor |
+
+```mermaid
+flowchart TB
+    GoF["Patrones GoF"] --> C["Creacionales"]
+    GoF --> E["Estructurales"]
+    GoF --> B["Comportamiento"]
+
+    C --> C1["Crear sin acoplar a clases concretas"]
+    E --> E1["Componer objetos y clases"]
+    B --> B1["Distribuir colaboraciones y algoritmos"]
+
+    C1 --> FM["Factory Method / Abstract Factory / Builder / Prototype / Singleton"]
+    E1 --> AD["Adapter / Bridge / Composite / Decorator / Facade / Flyweight / Proxy"]
+    B1 --> OB["Observer / Strategy / Command / State / Template Method / otros"]
+```
 
 ## Patrones creacionales
 
@@ -220,6 +310,31 @@ class DialogoWindows extends Dialogo {
 }
 ```
 
+```mermaid
+classDiagram
+    class Dialogo {
+        <<abstract>>
+        +render()
+        +crearBoton() Boton
+    }
+    class DialogoWindows {
+        +crearBoton() Boton
+    }
+    class Boton {
+        <<interface>>
+        +dibujar()
+    }
+    class BotonWindows {
+        +dibujar()
+    }
+
+    DialogoWindows --|> Dialogo
+    Dialogo --> Boton : crea/usa
+    BotonWindows ..|> Boton
+```
+
+La clase base usa el producto abstracto (`Boton`), pero no conoce la clase concreta (`BotonWindows`). La variación queda protegida en el método de fabricación.
+
 ### Abstract Factory (fábrica abstracta)
 
 - **Propósito**: proporcionar una interfaz para crear **familias de objetos relacionados** sin especificar sus clases concretas.
@@ -236,6 +351,30 @@ class FabricaWindows implements FabricaGUI {
 
 {: .note }
 > Diferencia clave: *Factory Method* crea **un** producto vía herencia (una subclase decide). *Abstract Factory* crea **familias** de productos vía composición (se le pasa al cliente la fábrica concreta a usar).
+
+```mermaid
+classDiagram
+    class Cliente
+    class FabricaGUI {
+        <<interface>>
+        +crearBoton()
+        +crearCheck()
+    }
+    class FabricaWindows
+    class FabricaMac
+    class Boton {
+        <<interface>>
+    }
+    class CheckBox {
+        <<interface>>
+    }
+
+    Cliente --> FabricaGUI : usa
+    FabricaWindows ..|> FabricaGUI
+    FabricaMac ..|> FabricaGUI
+    FabricaGUI --> Boton : crea
+    FabricaGUI --> CheckBox : crea
+```
 
 ### Builder (constructor)
 
@@ -281,6 +420,28 @@ class AdaptadorPago implements PasarelaPago {
 }
 ```
 
+```mermaid
+classDiagram
+    class Cliente
+    class PasarelaPago {
+        <<interface>>
+        +cobrar(monto)
+    }
+    class AdaptadorPago {
+        -api: ApiExterna
+        +cobrar(monto)
+    }
+    class ApiExterna {
+        +doCharge(amount)
+    }
+
+    Cliente --> PasarelaPago
+    AdaptadorPago ..|> PasarelaPago
+    AdaptadorPago --> ApiExterna : traduce
+```
+
+El cliente habla en términos del contrato esperado (`PasarelaPago`). El adaptador encapsula la incompatibilidad con la API externa.
+
 ### Bridge (puente)
 
 - **Propósito**: **desacoplar una abstracción de su implementación** para que ambas puedan variar independientemente.
@@ -290,6 +451,26 @@ class AdaptadorPago implements PasarelaPago {
 
 - **Propósito**: componer objetos en **estructuras de árbol** para representar jerarquías parte-todo, de modo que el cliente trate de manera **uniforme** objetos individuales y composiciones.
 - **Cuándo usar**: árboles de objetos como sistemas de archivos (archivos y carpetas), menús con submenús, componentes gráficos anidados.
+
+```mermaid
+classDiagram
+    class Componente {
+        <<interface>>
+        +operacion()
+    }
+    class Hoja {
+        +operacion()
+    }
+    class Compuesto {
+        -hijos: Componente[]
+        +agregar(c)
+        +operacion()
+    }
+
+    Hoja ..|> Componente
+    Compuesto ..|> Componente
+    Compuesto "1" --> "*" Componente : contiene
+```
 
 ### Decorator (decorador)
 
@@ -338,6 +519,26 @@ class Carrito {
 }
 ```
 
+```mermaid
+classDiagram
+    class Carrito {
+        -descuento: Descuento
+        +total()
+    }
+    class Descuento {
+        <<interface>>
+        +aplicar(monto)
+    }
+    class DescuentoNavidad
+    class DescuentoClienteVip
+
+    Carrito --> Descuento : delega
+    DescuentoNavidad ..|> Descuento
+    DescuentoClienteVip ..|> Descuento
+```
+
+Strategy aplica **Polimorfismo** y **Variaciones Protegidas**: el cálculo puede variar sin modificar `Carrito`.
+
 ### Observer (observador)
 
 - **Propósito**: definir una dependencia **uno-a-muchos** entre objetos, de modo que cuando uno (el *sujeto*) cambia de estado, todos sus dependientes (*observadores*) son notificados y actualizados automáticamente.
@@ -350,6 +551,19 @@ class Sujeto {
     List<Observador> obs;
     void notificar() { for (o : obs) o.actualizar(estado); }
 }
+```
+
+```mermaid
+sequenceDiagram
+    participant Modelo as Sujeto/Modelo
+    participant Vista1 as Observador A
+    participant Vista2 as Observador B
+
+    Vista1->>Modelo: suscribir()
+    Vista2->>Modelo: suscribir()
+    Modelo->>Modelo: cambiarEstado()
+    Modelo-->>Vista1: actualizar(estado)
+    Modelo-->>Vista2: actualizar(estado)
 ```
 
 ### Command (comando / orden)
@@ -448,6 +662,31 @@ MVC combina varios patrones GoF: la relación Modelo→Vista suele realizarse co
 {: .note }
 > MVC figura en la planificación de la cátedra como patrón arquitectónico. Para el parcial conviene poder explicar las tres responsabilidades, por qué se separan y qué patrones GoF lo sustentan (sobre todo **Observer**).
 
+```mermaid
+flowchart LR
+    U["Usuario"] --> C["Controlador"]
+    C --> M["Modelo"]
+    M --> V["Vista"]
+    V --> U
+    U --> V
+```
+
+El flujo varía según la tecnología, pero la separación conceptual se mantiene: entrada/interacción en el controlador, estado y reglas en el modelo, presentación en la vista.
+
+## Guía rápida para elegir patrones
+
+| Si el problema es... | Revisar primero |
+|---|---|
+| No sé quién debe hacer algo. | GRASP: Experto en Información, Controlador, Alta Cohesión, Bajo Acoplamiento. |
+| Tengo muchos `if/switch` por tipo o algoritmo. | Polimorfismo, Strategy, State, Template Method. |
+| Necesito crear objetos sin acoplarme a clases concretas. | Factory Method, Abstract Factory, Builder, Prototype. |
+| Tengo una librería con interfaz incompatible. | Adapter. |
+| Quiero agregar comportamiento sin crear muchas subclases. | Decorator. |
+| El cliente ve demasiadas clases de un subsistema. | Facade. |
+| Tengo varios objetos que deben enterarse de cambios. | Observer. |
+| Necesito undo, cola de tareas o acciones parametrizables. | Command o Memento. |
+| Una clase concentra demasiadas responsabilidades. | Refactorizar; GRASP Alta Cohesión; posible Pure Fabrication. |
+
 ## Antipatrones y malas prácticas
 
 Un **antipatrón** (*anti-pattern*) es una solución a un problema recurrente que, **aunque a primera vista parece adecuada, resulta contraproducente**: genera más problemas de los que resuelve. A diferencia de un simple error, el antipatrón es una *forma de hacer* repetida que parece razonable pero degrada la calidad del software. Documentarlos sirve para reconocerlos y evitarlos.
@@ -529,3 +768,19 @@ Para el parcial conviene poder, de cada patrón: nombrarlo, decir su **categorí
 
 {: .note }
 > Trucos para recordar GoF: **creacionales** = *cómo se crean* los objetos; **estructurales** = *cómo se componen*; **de comportamiento** = *cómo interactúan*. Y los tres "primos" estructurales se distinguen por intención: Adapter (cambia interfaz), Decorator (agrega), Proxy (controla acceso).
+
+### Cobertura del programa de la unidad 3
+
+| Tema indicado en el programa.pdf | Dónde aparece en estos apuntes |
+|---|---|
+| Los patrones y el diseño | Introducción; qué es un patrón; principios OO |
+| Objetivos de los patrones | Definición, beneficios y cómo aplicar un patrón |
+| Estructura de los patrones | Elementos GoF; diagramas de estructura |
+| Aplicación práctica | Ejemplos, guía rápida y diagramas Mermaid |
+| Patrones creacionales | Sección "Patrones creacionales" |
+| Patrones estructurales | Sección "Patrones estructurales" |
+| Patrones de comportamiento | Sección "Patrones de comportamiento" |
+| GRASP / asignación de responsabilidades | Sección "Patrones GRASP (Larman)" |
+| Arquitectura MVC | Sección "Arquitectura MVC" |
+| Antipatrones y malas prácticas | Sección "Antipatrones y malas prácticas" |
+| Mejores prácticas | Sección "Mejores prácticas de diseño" |

@@ -20,6 +20,6 @@ Los **patrones de diseño** como soluciones probadas a problemas recurrentes. Se
 
 ## Bibliografía
 
-- GoF, *Design Patterns*.
-- Larman, *UML y patrones* (GRASP).
-- Pressman & Maxim, *Software Engineering* (9.ª), patrones de diseño.
+- **Principal:** GoF, *Design Patterns* — patrones creacionales, estructurales y de comportamiento.
+- **Principal:** Larman, *UML y patrones* — GRASP y asignación de responsabilidades.
+- **Consulta:** Pressman & Maxim, *Software Engineering* (9.ª), patrones de diseño y arquitectura.
