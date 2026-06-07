@@ -716,11 +716,11 @@ Para diseño de software, estas miradas se traducen en dos conceptos importantes
 
 ```mermaid
 flowchart LR
-    R["Requisitos"] --> D["Diseno"]
-    D --> I["Implementacion"]
-    R --> QD["Calidad de diseno<br/>cumple lo requerido?"]
+    R["Requisitos"] --> D["Diseño"]
+    D --> I["Implementación"]
+    R --> QD["Calidad de diseño<br/>cumple lo requerido?"]
     D --> QC["Calidad de conformidad<br/>se implemento lo disenado?"]
-    I --> U["Satisfaccion del usuario"]
+    I --> U["Satisfacción del usuario"]
 ```
 
 La fórmula práctica de Glass, citada en las clases, resume el resultado esperado:
