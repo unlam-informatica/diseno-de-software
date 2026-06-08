@@ -346,6 +346,20 @@ class Configuracion {
 }
 ```
 
+```mermaid
+classDiagram
+    class Configuracion {
+        -instancia: Configuracion
+        -Configuracion()
+        +getInstance() Configuracion
+        +leerClave(nombre)
+    }
+
+    Configuracion --> Configuracion : guarda unica instancia
+```
+
+La representación marca tres rasgos: la operación de acceso es estática, el constructor no es público y la clase mantiene una referencia a su propia instancia.
+
 ### Factory Method (método de fabricación)
 
 - **Propósito**: definir una interfaz para crear un objeto, pero **dejar que las subclases decidan qué clase instanciar**. Difiere la instanciación a las subclases.
@@ -409,24 +423,44 @@ classDiagram
     class Cliente
     class FabricaGUI {
         <<interface>>
-        +crearBoton()
-        +crearCheck()
+        +crearBoton() Boton
+        +crearCheck() CheckBox
     }
-    class FabricaWindows
-    class FabricaMac
+    class FabricaWindows {
+        +crearBoton() Boton
+        +crearCheck() CheckBox
+    }
+    class FabricaMac {
+        +crearBoton() Boton
+        +crearCheck() CheckBox
+    }
     class Boton {
         <<interface>>
     }
     class CheckBox {
         <<interface>>
     }
+    class BotonWindows
+    class CheckWindows
+    class BotonMac
+    class CheckMac
 
     Cliente --> FabricaGUI : usa
     FabricaWindows ..|> FabricaGUI
     FabricaMac ..|> FabricaGUI
     FabricaGUI --> Boton : crea
     FabricaGUI --> CheckBox : crea
+    BotonWindows ..|> Boton
+    CheckWindows ..|> CheckBox
+    BotonMac ..|> Boton
+    CheckMac ..|> CheckBox
+    FabricaWindows --> BotonWindows : instancia
+    FabricaWindows --> CheckWindows : instancia
+    FabricaMac --> BotonMac : instancia
+    FabricaMac --> CheckMac : instancia
 ```
+
+El cliente solo conoce la fábrica y los productos abstractos. La fábrica concreta garantiza que los productos creados pertenezcan a la misma familia.
 
 ### Builder (constructor)
 
@@ -442,6 +476,34 @@ Pizza p = new PizzaBuilder()
     .build();
 ```
 
+```mermaid
+classDiagram
+    class Director {
+        +construir()
+    }
+    class BuilderPizza {
+        <<interface>>
+        +conMasa()
+        +conSalsa()
+        +agregarTopping()
+        +getResultado() Pizza
+    }
+    class PizzaBuilder {
+        -pizza: Pizza
+        +conMasa()
+        +conSalsa()
+        +agregarTopping()
+        +getResultado() Pizza
+    }
+    class Pizza
+
+    Director --> BuilderPizza : ordena pasos
+    PizzaBuilder ..|> BuilderPizza
+    PizzaBuilder --> Pizza : construye
+```
+
+El `Director` puede existir o no. Lo importante es que la construcción paso a paso queda separada del objeto final.
+
 ### Prototype (prototipo)
 
 - **Propósito**: crear nuevos objetos **clonando** un objeto existente (el prototipo), en lugar de instanciarlos desde cero.
@@ -454,6 +516,29 @@ class Documento implements Clonable {
     Clonable clonar() { return new Documento(this); } // copia
 }
 ```
+
+```mermaid
+classDiagram
+    class Cliente
+    class Prototipo {
+        <<interface>>
+        +clonar() Prototipo
+    }
+    class DocumentoBase {
+        +clonar() Prototipo
+    }
+    class PlantillaFactura {
+        +clonar() Prototipo
+    }
+
+    Cliente --> Prototipo : pide clonar
+    DocumentoBase ..|> Prototipo
+    PlantillaFactura ..|> Prototipo
+    DocumentoBase --> DocumentoBase : copia
+    PlantillaFactura --> PlantillaFactura : copia
+```
+
+La creación no depende de `new` sobre una clase concreta, sino de copiar un objeto prototipo ya configurado.
 
 ## Patrones estructurales
 
@@ -499,6 +584,36 @@ El cliente habla en términos del contrato esperado (`PasarelaPago`). El adaptad
 - **Propósito**: **desacoplar una abstracción de su implementación** para que ambas puedan variar independientemente.
 - **Cuándo usar**: cuando se quiere evitar una explosión de subclases por combinar dos dimensiones de variación (p. ej. *forma* × *renderizador*). Se modelan dos jerarquías unidas por composición.
 
+```mermaid
+classDiagram
+    class Forma {
+        <<abstract>>
+        -renderizador: Renderizador
+        +dibujar()
+    }
+    class Circulo {
+        +dibujar()
+    }
+    class Rectangulo {
+        +dibujar()
+    }
+    class Renderizador {
+        <<interface>>
+        +dibujarCirculo()
+        +dibujarRectangulo()
+    }
+    class RenderizadorSVG
+    class RenderizadorCanvas
+
+    Circulo --|> Forma
+    Rectangulo --|> Forma
+    Forma --> Renderizador : delega implementacion
+    RenderizadorSVG ..|> Renderizador
+    RenderizadorCanvas ..|> Renderizador
+```
+
+El puente evita clases como `CirculoSVG`, `CirculoCanvas`, `RectanguloSVG` y `RectanguloCanvas`: las formas y los renderizadores evolucionan por separado.
+
 ### Composite (compuesto)
 
 - **Propósito**: componer objetos en **estructuras de árbol** para representar jerarquías parte-todo, de modo que el cliente trate de manera **uniforme** objetos individuales y composiciones.
@@ -534,21 +649,119 @@ Componente c = new Decorador2(new Decorador1(new ComponenteBase()));
 // cada decorador agrega comportamiento antes/después de delegar
 ```
 
+```mermaid
+classDiagram
+    class Componente {
+        <<interface>>
+        +operacion()
+    }
+    class ComponenteConcreto {
+        +operacion()
+    }
+    class Decorador {
+        <<abstract>>
+        -componente: Componente
+        +operacion()
+    }
+    class DecoradorBorde {
+        +operacion()
+    }
+    class DecoradorScroll {
+        +operacion()
+    }
+
+    ComponenteConcreto ..|> Componente
+    Decorador ..|> Componente
+    Decorador --> Componente : envuelve/delega
+    DecoradorBorde --|> Decorador
+    DecoradorScroll --|> Decorador
+```
+
+El decorador conserva la misma interfaz que el componente. Por eso el cliente puede usar un objeto decorado como si fuera el componente original.
+
 ### Facade (fachada)
 
 - **Propósito**: ofrecer una **interfaz unificada y simple** a un conjunto de interfaces de un subsistema, reduciendo su complejidad para el cliente.
 - **Cuándo usar**: para desacoplar a los clientes de los detalles internos de un subsistema complejo y proporcionar un punto de entrada de alto nivel.
+
+```mermaid
+classDiagram
+    class Cliente
+    class FachadaVideo {
+        +convertir(archivo, formato)
+    }
+    class Codec
+    class LectorArchivo
+    class Compresor
+    class Exportador
+
+    Cliente --> FachadaVideo : usa API simple
+    FachadaVideo --> Codec
+    FachadaVideo --> LectorArchivo
+    FachadaVideo --> Compresor
+    FachadaVideo --> Exportador
+```
+
+La fachada no reemplaza necesariamente al subsistema: ofrece una entrada simple para los casos comunes y reduce el conocimiento que el cliente necesita tener.
 
 ### Flyweight (peso ligero)
 
 - **Propósito**: usar **compartición** para soportar eficientemente grandes cantidades de objetos de grano fino, separando el estado **intrínseco** (compartible) del **extrínseco** (dependiente del contexto).
 - **Cuándo usar**: cuando hay muchísimos objetos similares y el costo de memoria es crítico (p. ej. caracteres en un editor de texto, partículas en un juego).
 
+```mermaid
+classDiagram
+    class Cliente
+    class FabricaFlyweight {
+        -cache: Map
+        +obtener(tipo) Flyweight
+    }
+    class Flyweight {
+        <<interface>>
+        +dibujar(x, y, color)
+    }
+    class Glifo {
+        -codigo: char
+        -fuente: Fuente
+        +dibujar(x, y, color)
+    }
+
+    Cliente --> FabricaFlyweight : solicita compartido
+    FabricaFlyweight --> Flyweight : devuelve
+    Glifo ..|> Flyweight
+    FabricaFlyweight --> Glifo : comparte estado intrinseco
+    Cliente ..> Flyweight : pasa estado extrinseco
+```
+
+El estado intrínseco queda dentro del objeto compartido (`codigo`, `fuente`). El estado extrínseco (`x`, `y`, `color`) lo aporta el cliente en cada uso.
+
 ### Proxy (apoderado / representante)
 
 - **Propósito**: proporcionar un **sustituto o representante** de otro objeto para controlar el acceso a él.
 - **Cuándo usar**: para *lazy loading* (proxy virtual), control de acceso (proxy de protección), acceso a un objeto remoto (proxy remoto) o caché. El proxy implementa la misma interfaz que el objeto real.
 
+```mermaid
+classDiagram
+    class Cliente
+    class Servicio {
+        <<interface>>
+        +operacion()
+    }
+    class ProxyServicio {
+        -real: ServicioReal
+        +operacion()
+    }
+    class ServicioReal {
+        +operacion()
+    }
+
+    Cliente --> Servicio
+    ProxyServicio ..|> Servicio
+    ServicioReal ..|> Servicio
+    ProxyServicio --> ServicioReal : controla acceso
+```
+
+El cliente depende de la interfaz común. El proxy decide cuándo crear, consultar, validar o delegar en el objeto real.
 {: .note }
 > *Decorator*, *Proxy* y *Adapter* parecen similares (todos "envuelven"), pero difieren en intención: **Adapter** cambia la interfaz; **Decorator** agrega comportamiento manteniendo la interfaz; **Proxy** controla el acceso manteniendo la interfaz.
 
@@ -606,6 +819,31 @@ class Sujeto {
 ```
 
 ```mermaid
+classDiagram
+    class Sujeto {
+        <<interface>>
+        +suscribir(o)
+        +desuscribir(o)
+        +notificar()
+    }
+    class Modelo {
+        -observadores: Observador[]
+        +notificar()
+    }
+    class Observador {
+        <<interface>>
+        +actualizar(estado)
+    }
+    class Vista
+    class PanelResumen
+
+    Modelo ..|> Sujeto
+    Vista ..|> Observador
+    PanelResumen ..|> Observador
+    Modelo --> Observador : notifica a muchos
+```
+
+```mermaid
 sequenceDiagram
     participant Modelo as Sujeto/Modelo
     participant Vista1 as Observador A
@@ -633,6 +871,32 @@ class GuardarComando implements Comando {
 boton.setComando(new GuardarComando(doc));
 ```
 
+```mermaid
+classDiagram
+    class Invocador {
+        -comando: Comando
+        +setComando(c)
+        +ejecutarComando()
+    }
+    class Comando {
+        <<interface>>
+        +ejecutar()
+    }
+    class GuardarComando {
+        -documento: Documento
+        +ejecutar()
+    }
+    class Documento {
+        +guardar()
+    }
+
+    Invocador --> Comando : dispara
+    GuardarComando ..|> Comando
+    GuardarComando --> Documento : receptor
+```
+
+El invocador no sabe qué acción concreta se ejecuta. La petición queda encapsulada en un objeto comando.
+
 ### Template Method (método plantilla)
 
 - **Propósito**: definir el **esqueleto de un algoritmo** en una operación, delegando algunos pasos a las subclases. Las subclases redefinen ciertos pasos sin cambiar la estructura general del algoritmo.
@@ -649,6 +913,28 @@ abstract class Reporte {
 }
 ```
 
+```mermaid
+classDiagram
+    class Reporte {
+        <<abstract>>
+        +generar()
+        #abrir()
+        #escribirCuerpo()
+        #cerrar()
+    }
+    class ReportePDF {
+        #escribirCuerpo()
+    }
+    class ReporteHTML {
+        #escribirCuerpo()
+    }
+
+    ReportePDF --|> Reporte
+    ReporteHTML --|> Reporte
+```
+
+El método plantilla (`generar`) fija el orden del algoritmo. Las subclases solo completan o redefinen pasos puntuales.
+
 {: .note }
 > *Strategy* vs. *Template Method*: ambos parametrizan un comportamiento. *Template Method* lo hace por **herencia** (subclases redefinen pasos, estructura fija en la base). *Strategy* lo hace por **composición** (se inyecta un objeto algoritmo, intercambiable en tiempo de ejecución).
 
@@ -663,6 +949,34 @@ Iterador it = coleccion.crearIterador();
 while (it.hayMas()) procesar(it.siguiente());
 ```
 
+```mermaid
+classDiagram
+    class Agregado {
+        <<interface>>
+        +crearIterador() Iterador
+    }
+    class ListaProductos {
+        +crearIterador() Iterador
+    }
+    class Iterador {
+        <<interface>>
+        +hayMas() bool
+        +siguiente() Producto
+    }
+    class IteradorLista {
+        -posicion: int
+        +hayMas() bool
+        +siguiente() Producto
+    }
+
+    ListaProductos ..|> Agregado
+    IteradorLista ..|> Iterador
+    Agregado --> Iterador : crea
+    IteradorLista --> ListaProductos : recorre
+```
+
+La colección conserva encapsulada su estructura interna. El iterador concentra el estado del recorrido.
+
 ### State (estado)
 
 - **Propósito**: permitir que un objeto **altere su comportamiento cuando cambia su estado interno**; parece que el objeto cambia de clase.
@@ -676,6 +990,37 @@ class Nuevo implements EstadoPedido {
 }
 ```
 
+```mermaid
+classDiagram
+    class Pedido {
+        -estado: EstadoPedido
+        +avanzar()
+        +setEstado(e)
+    }
+    class EstadoPedido {
+        <<interface>>
+        +avanzar(pedido)
+    }
+    class Nuevo {
+        +avanzar(pedido)
+    }
+    class Pagado {
+        +avanzar(pedido)
+    }
+    class Enviado {
+        +avanzar(pedido)
+    }
+
+    Pedido --> EstadoPedido : delega segun estado actual
+    Nuevo ..|> EstadoPedido
+    Pagado ..|> EstadoPedido
+    Enviado ..|> EstadoPedido
+    Nuevo ..> Pagado : transicion
+    Pagado ..> Enviado : transicion
+```
+
+El contexto (`Pedido`) delega el comportamiento en el estado actual. Las transiciones pueden vivir en el contexto o en los estados concretos.
+
 {: .note }
 > *State* y *Strategy* comparten estructura (un contexto que delega en un objeto). Difieren en intención: en *Strategy* el cliente elige el algoritmo y este no cambia; en *State* las transiciones entre estados están gobernadas por los propios estados o el contexto, y cambian durante la vida del objeto.
 
@@ -683,21 +1028,167 @@ class Nuevo implements EstadoPedido {
 
 - **Propósito**: evitar acoplar el emisor de una petición a su receptor dando a más de un objeto la oportunidad de manejarla. Se encadenan los receptores y la petición viaja por la cadena hasta que uno la atiende. Ejemplos: filtros/middleware HTTP, niveles de aprobación de gastos, manejadores de eventos.
 
+```mermaid
+classDiagram
+    class Cliente
+    class Manejador {
+        <<abstract>>
+        -siguiente: Manejador
+        +setSiguiente(m)
+        +manejar(solicitud)
+    }
+    class ValidadorToken {
+        +manejar(solicitud)
+    }
+    class ValidadorPermisos {
+        +manejar(solicitud)
+    }
+    class ControladorFinal {
+        +manejar(solicitud)
+    }
+
+    Cliente --> Manejador : envia solicitud
+    Manejador --> Manejador : siguiente
+    ValidadorToken --|> Manejador
+    ValidadorPermisos --|> Manejador
+    ControladorFinal --|> Manejador
+```
+
+Cada manejador decide si atiende la solicitud o la pasa al siguiente. El emisor no conoce qué objeto la resolverá.
+
 ### Mediator (mediador)
 
 - **Propósito**: definir un objeto que **encapsula cómo interactúa un conjunto de objetos**, promoviendo el bajo acoplamiento al evitar que se refieran entre sí explícitamente. Ejemplo: un controlador de diálogo que coordina sus widgets.
+
+```mermaid
+classDiagram
+    class MediadorDialogo {
+        <<interface>>
+        +notificar(origen, evento)
+    }
+    class DialogoLogin {
+        +notificar(origen, evento)
+    }
+    class ComponenteUI {
+        <<abstract>>
+        -mediador: MediadorDialogo
+    }
+    class CampoUsuario
+    class CampoClave
+    class BotonAceptar
+
+    DialogoLogin ..|> MediadorDialogo
+    ComponenteUI --> MediadorDialogo : avisa eventos
+    CampoUsuario --|> ComponenteUI
+    CampoClave --|> ComponenteUI
+    BotonAceptar --|> ComponenteUI
+    DialogoLogin --> CampoUsuario
+    DialogoLogin --> CampoClave
+    DialogoLogin --> BotonAceptar
+```
+
+Los componentes no se coordinan directamente entre sí. El mediador concentra las reglas de interacción.
 
 ### Memento (recuerdo)
 
 - **Propósito**: capturar y externalizar el **estado interno** de un objeto sin violar su encapsulamiento, de modo que pueda restaurarse a ese estado más tarde. Base de las funciones de *undo* y *snapshots*.
 
+```mermaid
+classDiagram
+    class Originador {
+        -estado: EstadoInterno
+        +crearMemento() Memento
+        +restaurar(m)
+    }
+    class Memento {
+        -estado: EstadoInterno
+    }
+    class Cuidador {
+        -historial: Memento[]
+        +guardar()
+        +deshacer()
+    }
+
+    Cuidador --> Memento : almacena
+    Originador --> Memento : crea/restaura
+    Cuidador --> Originador : solicita snapshots
+```
+
+El cuidador guarda recuerdos, pero no interpreta su contenido. Solo el originador conoce cómo guardar y restaurar su estado interno.
+
 ### Visitor (visitante)
 
 - **Propósito**: representar una **operación a realizar sobre los elementos** de una estructura de objetos, permitiendo definir nuevas operaciones sin modificar las clases de los elementos sobre los que opera. Útil cuando la estructura es estable pero las operaciones cambian.
 
+```mermaid
+classDiagram
+    class Elemento {
+        <<interface>>
+        +aceptar(v: Visitante)
+    }
+    class Producto
+    class Servicio
+    class Visitante {
+        <<interface>>
+        +visitarProducto(p)
+        +visitarServicio(s)
+    }
+    class VisitanteImpuestos
+    class VisitanteExportacion
+
+    Producto ..|> Elemento
+    Servicio ..|> Elemento
+    VisitanteImpuestos ..|> Visitante
+    VisitanteExportacion ..|> Visitante
+    Elemento --> Visitante : acepta
+    Visitante --> Producto : visita
+    Visitante --> Servicio : visita
+```
+
+Cada elemento llama al método específico del visitante para su tipo. Así se agregan operaciones nuevas creando visitantes nuevos, sin cambiar la jerarquía de elementos.
+
 ### Interpreter (intérprete)
 
 - **Propósito**: dado un lenguaje, definir una representación de su **gramática** junto con un intérprete que usa esa representación para interpretar sentencias del lenguaje. Útil para lenguajes simples (expresiones, reglas, consultas).
+
+```mermaid
+classDiagram
+    class Contexto {
+        +buscar(nombre)
+    }
+    class Expresion {
+        <<interface>>
+        +interpretar(ctx)
+    }
+    class Variable {
+        -nombre: string
+        +interpretar(ctx)
+    }
+    class Constante {
+        -valor: bool
+        +interpretar(ctx)
+    }
+    class And {
+        -izq: Expresion
+        -der: Expresion
+        +interpretar(ctx)
+    }
+    class Or {
+        -izq: Expresion
+        -der: Expresion
+        +interpretar(ctx)
+    }
+
+    Variable ..|> Expresion
+    Constante ..|> Expresion
+    And ..|> Expresion
+    Or ..|> Expresion
+    And --> Expresion : subexpresiones
+    Or --> Expresion : subexpresiones
+    Expresion --> Contexto : consulta
+```
+
+La gramática se modela como clases de expresiones. Interpretar una sentencia equivale a recorrer el árbol de expresiones y evaluar cada nodo.
 
 ## Arquitectura MVC (Modelo-Vista-Controlador)
 
